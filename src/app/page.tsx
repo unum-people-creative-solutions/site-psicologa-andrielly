@@ -10,8 +10,49 @@ import Image from "next/image";
 import { Instagram } from "lucide-react";
 
 export default function Home() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Psychologist",
+    "name": "Andrielly Oliveira - Psicóloga & Neuropsicóloga",
+    "image": "https://psiandriellyoliveira.com.br/images/psiandriellyoliveira-20250319_153010.jpg",
+    "description": "Atendimento especializado para crianças, adolescentes e adultos em Curitiba. Psicanálise e Neuropsicologia.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Av. Cândido de Abreu, 526 - Torre B 6º andar sala 604",
+      "addressLocality": "Curitiba",
+      "addressRegion": "PR",
+      "postalCode": "80530-905",
+      "addressCountry": "BR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -25.4199727,
+      "longitude": -49.2684984
+    },
+    "url": "https://psiandriellyoliveira.com.br",
+    "telephone": "+5541984873009",
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "08:00",
+        "closes": "20:00"
+      }
+    ]
+  };
+
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <Hero />
       <About />

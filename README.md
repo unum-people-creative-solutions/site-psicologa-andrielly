@@ -1,48 +1,59 @@
 # Site Institucional - Psicóloga Andrielly Oliveira
 
-Este é o novo site institucional da **Psicóloga Andrielly Oliveira**, especialista em atendimento infantil, neuropsicologia e avaliação psicológica. O projeto foi desenvolvido com foco em um público de alto padrão, utilizando uma estética minimalista, elegante e acolhedora.
+Este é o site institucional da **Psicóloga Andrielly Oliveira**, especialista em atendimento infantil, neuropsicologia e avaliação psicológica. O projeto foi concebido para transmitir exclusividade, autoridade técnica e acolhimento, focado em um público de alto padrão.
 
 ## 🚀 Tecnologias
 
 - **Next.js 14+** (App Router)
 - **Tailwind CSS** (Estilização)
-- **Framer Motion** (Animações)
-- **Lucide React** (Ícones)
+- **Framer Motion** (Animações e Micro-interações)
+- **Lucide React & React Icons** (Iconografia)
 - **TypeScript**
 
-## 🎨 Identidade Visual (Premium)
+## 🎨 Identidade Visual & UX (Premium)
 
-- **Cores:** Tons de Off-white, Azul Marinho Profundo, Verde Oliva e Nude/Dourado.
-- **Tipografia:** Serifada para títulos (Autoridade) e Sans-serif para corpo (Clareza).
-- **Estilo:** Minimalismo, espaços generosos e micro-interações fluidas.
+- **Paleta de Cores:** 
+  - `Navy` (#1A2B3C): Autoridade e segurança clínica.
+  - `Gold` (#C5A059): Sofisticação e detalhismo.
+  - `Off-white` (#FDFCFB): Leveza e clareza visual.
+  - `Olive` (#3D4430): Conexão com a natureza e acolhimento.
+- **Tipografia:** 
+  - *Playfair Display* (Serifada): Elegância e autoridade para títulos.
+  - *Inter* (Sans-serif): Alta legibilidade para textos de apoio.
+- **Destaques de UX:** 
+  - Menu mobile com trava de rolagem e efeito de desfoque (backdrop blur).
+  - Botão flutuante de WhatsApp personalizado com a identidade visual do site.
+  - Integração direta com Google Maps para localização exata no Centro Cívico.
 
-## 📁 Estrutura de Pastas
+## 📁 Estrutura do Projeto
 
 ```text
 /
 ├── public/
-│   ├── images/      # Fotos e Logotipos (Adicionar aqui)
-│   └── icons/       # Favicons e ativos de ícones
+│   └── images/      # Ativos visuais (Logos, fotos da psicóloga e da Unum)
 ├── src/
-│   ├── app/         # Rotas e layouts (App Router)
-│   ├── components/  # Componentes reutilizáveis e seções
-│   ├── lib/         # Utilitários e configurações
-│   └── styles/      # CSS Global e temas
+│   ├── app/         # Rotas, metadados e layout principal
+│   ├── components/  # Seções (Hero, About, Specialties, Methodology, Contact, etc.)
+│   ├── lib/         # Utilitários (Tailwind Merge, etc.)
+│   └── styles/      # CSS Global e configurações de tema
 ```
 
-## 🛠️ Instalação e Desenvolvimento
+## 🛠️ Instalação e Execução
 
-1. Instale as dependências:
+1. **Instalar dependências:**
    ```bash
    npm install
    ```
 
-2. Inicie o servidor de desenvolvimento:
+2. **Ambiente de Desenvolvimento:**
    ```bash
    npm run dev
    ```
 
-3. Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
+3. **Build para Produção:**
+   ```bash
+   npm run build
+   ```
 
 ---
-Desenvolvido com foco em excelência e acolhimento.
+**Desenvolvido por:** [Unum People Creative Solutions](https://unumpeople.com.br)
