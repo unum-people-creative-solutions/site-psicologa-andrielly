@@ -13,8 +13,12 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://psiandriellyoliveira.com.br"),
   title: "Andrielly Oliveira | Psicóloga & Neuropsicóloga em Curitiba",
   description: "Psicóloga clínica Andrielly Oliveira (CRP 08/35504). Especialista em atendimento infantil, adolescente e adulto. Avaliação neuropsicológica e psicanálise no Centro Cívico, Curitiba.",
+  alternates: {
+    canonical: "/",
+  },
   keywords: ["Psicóloga Curitiba", "Neuropsicóloga Curitiba", "Atendimento Infantil", "Psicoterapia Adolescente", "Psicanálise Curitiba", "Avaliação Psicológica", "Centro Cívico Curitiba"],
   authors: [{ name: "Andrielly Oliveira" }],
   openGraph: {
