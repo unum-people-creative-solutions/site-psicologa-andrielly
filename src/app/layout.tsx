@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 import "@/styles/globals.css";
+import { LeadProvider } from "@/context/LeadContext";
+import LeadModal from "@/components/LeadModal";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -51,7 +54,36 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="scroll-smooth">
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
-        {children}
+        {/* Google Ads Tag (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17122840229"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-tag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-17122840229');
+
+            window.gtag_report_conversion = function(url) {
+              var callback = function () {
+                if (typeof(url) != 'undefined') {
+                  window.location = url;
+                }
+              };
+              gtag('event', 'conversion', {
+                  'send_to': 'AW-17122840229/0k8KCMO2jtQaEKWd5-Q_',
+                  'event_callback': callback
+              });
+              return false;
+            }
+          `}
+        </Script>
+        <LeadProvider>
+          {children}
+          <LeadModal />
+        </LeadProvider>
       </body>
     </html>
   );

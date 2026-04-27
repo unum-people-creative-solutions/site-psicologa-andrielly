@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLead } from "@/context/LeadContext";
 
 const navLinks = [
   { name: "Sobre", href: "#sobre" },
@@ -16,6 +17,7 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { openLeadModal } = useLead();
 
   useEffect(() => {
     if (isOpen) {
@@ -67,6 +69,10 @@ export default function Navbar() {
               href="https://wa.me/5541984873009?text=Olá,%20Dra.%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta."
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                e.preventDefault();
+                openLeadModal(e.currentTarget.href);
+              }}
               className="bg-brand-navy text-brand-offwhite px-6 py-2 rounded-full hover:bg-brand-olive transition-all duration-300 text-sm font-semibold tracking-wider"
             >
               AGENDAR
@@ -121,8 +127,12 @@ export default function Navbar() {
                     href="https://wa.me/5541984873009?text=Olá,%20Dra.%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta."
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={(e) => {
+                      setIsOpen(false);
+                      e.preventDefault();
+                      openLeadModal(e.currentTarget.href);
+                    }}
                     className="bg-brand-navy text-brand-offwhite text-center block py-4 rounded-full font-bold shadow-lg shadow-brand-navy/10"
-                    onClick={() => setIsOpen(false)}
                   >
                     AGENDAR CONSULTA
                   </a>

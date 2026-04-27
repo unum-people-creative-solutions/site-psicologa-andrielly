@@ -4,8 +4,10 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { MapPin, Send } from "lucide-react";
 import WhatsAppIcon from "./WhatsAppIcon";
+import { useLead } from "@/context/LeadContext";
 
 export default function Contact() {
+  const { openLeadModal } = useLead();
   return (
     <section id="contato" className="py-24 bg-brand-offwhite">
       <div className="container mx-auto px-6 md:px-12">
@@ -28,7 +30,16 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-brand-olive mb-1">WhatsApp</p>
-                  <a href="https://wa.me/5541984873009?text=Olá,%20Dra.%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta." target="_blank" className="text-xl font-medium text-brand-navy hover:text-brand-gold transition-colors">
+                  <a 
+                    href="https://wa.me/5541984873009?text=Olá,%20Dra.%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta." 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openLeadModal(e.currentTarget.href);
+                    }}
+                    className="text-xl font-medium text-brand-navy hover:text-brand-gold transition-colors"
+                  >
                     (41) 9 8487-3009
                   </a>
                 </div>
