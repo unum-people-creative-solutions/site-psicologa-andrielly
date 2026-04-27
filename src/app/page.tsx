@@ -1,3 +1,5 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -8,8 +10,10 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import Image from "next/image";
 import { Instagram } from "lucide-react";
+import { useLead } from "@/context/LeadContext";
 
 export default function Home() {
+  const { openLeadModal } = useLead();
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Psychologist",
@@ -90,6 +94,11 @@ export default function Home() {
               <a 
                 href="https://wa.me/5541984873009?text=Olá,%20Dra.%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta." 
                 target="_blank" 
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  openLeadModal(e.currentTarget.href);
+                }}
                 className="text-brand-navy/60 hover:text-brand-gold transition-all flex items-center gap-2 text-sm font-medium group"
               >
                 <WhatsAppIcon size={20} className="group-hover:scale-110 transition-transform" />

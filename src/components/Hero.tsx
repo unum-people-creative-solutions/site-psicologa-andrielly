@@ -23,7 +23,7 @@ export default function Hero() {
             <span className="italic text-brand-gold">singular</span> em cada jornada.
           </h1>
           <p className="text-lg text-brand-navy/80 mb-8 max-w-lg leading-relaxed">
-            Especialista em atendimento infantil, adolescente e adulto. Um espaço seguro para transformar o sofrimento em autoconhecimento e desenvolvimento.
+            Especialista em atendimento infantil e de adolescentes. Um espaço seguro para transformar o sofrimento em autoconhecimento e desenvolvimento.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <a

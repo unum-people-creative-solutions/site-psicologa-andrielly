@@ -2,13 +2,20 @@
 
 import { motion } from "framer-motion";
 import WhatsAppIcon from "./WhatsAppIcon";
+import { useLead } from "@/context/LeadContext";
 
 export default function WhatsAppButton() {
+  const { openLeadModal } = useLead();
+
   return (
     <motion.a
       href="https://wa.me/5541984873009?text=Olá,%20Dra.%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta."
       target="_blank"
       rel="noopener noreferrer"
+      onClick={(e) => {
+        e.preventDefault();
+        openLeadModal((e.currentTarget as HTMLAnchorElement).href);
+      }}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       whileHover={{ scale: 1.1 }}
