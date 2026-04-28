@@ -17,7 +17,7 @@ export default function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Psychologist",
-    "name": "Andrielly Oliveira - Psicóloga & Neuropsicóloga",
+    "name": "Andrielly Oliveira - Psicóloga",
     "image": "https://psiandriellyoliveira.com.br/images/psiandriellyoliveira-20250319_153010.jpg",
     "description": "Atendimento especializado para crianças, adolescentes e adultos em Curitiba. Psicanálise e Neuropsicologia.",
     "address": {
