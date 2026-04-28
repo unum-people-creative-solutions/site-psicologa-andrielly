@@ -15,15 +15,39 @@ export default function LeadModal() {
     telefone: "",
   });
 
-  const [origem, setOrigem] = useState("Direct / No UTM");
+  const [origem, setOrigem] = useState("Direto / Orgânico");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const utmSource = params.get("utm_source");
+      const utmMedium = params.get("utm_medium");
       const utmCampaign = params.get("utm_campaign");
-      if (utmSource || utmCampaign) {
-        setOrigem(`${utmSource || "n/a"} - ${utmCampaign || "n/a"}`);
+      const utmContent = params.get("utm_content");
+      const gclid = params.get("gclid");
+      const fbclid = params.get("fbclid");
+      const msclkid = params.get("msclkid");
+
+      if (utmSource || utmCampaign || gclid || fbclid || msclkid) {
+        const parts = [
+          utmSource && `Source: ${utmSource}`,
+          utmMedium && `Medium: ${utmMedium}`,
+          utmCampaign && `Campaign: ${utmCampaign}`,
+          utmContent && `Content: ${utmContent}`,
+          gclid && `GCLID: ${gclid}`,
+          fbclid && `FBCLID: ${fbclid}`,
+          msclkid && `MSCLKID: ${msclkid}`
+        ].filter(Boolean);
+        setOrigem(parts.join(" | "));
+      } else if (document.referrer) {
+        try {
+          const refUrl = new URL(document.referrer);
+          if (refUrl.hostname !== window.location.hostname) {
+            setOrigem(`Referrer: ${refUrl.hostname}`);
+          }
+        } catch (e) {
+          setOrigem(`Referrer: ${document.referrer}`);
+        }
       }
     }
   }, []);
