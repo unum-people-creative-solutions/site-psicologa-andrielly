@@ -16,6 +16,21 @@ export default function LeadModal() {
   });
 
   const [origem, setOrigem] = useState("Direto / Orgânico");
+  const [tracking, setTracking] = useState<{
+    gclid: string | null;
+    fbclid: string | null;
+    msclkid: string | null;
+    utm_source: string | null;
+    utm_medium: string | null;
+    utm_campaign: string | null;
+  }>({
+    gclid: null,
+    fbclid: null,
+    msclkid: null,
+    utm_source: null,
+    utm_medium: null,
+    utm_campaign: null,
+  });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -27,6 +42,15 @@ export default function LeadModal() {
       const gclid = params.get("gclid");
       const fbclid = params.get("fbclid");
       const msclkid = params.get("msclkid");
+
+      setTracking({
+        gclid,
+        fbclid,
+        msclkid,
+        utm_source: utmSource,
+        utm_medium: utmMedium,
+        utm_campaign: utmCampaign,
+      });
 
       if (utmSource || utmCampaign || gclid || fbclid || msclkid) {
         const parts = [
@@ -63,6 +87,7 @@ export default function LeadModal() {
         email: formData.email,
         telefone: formData.telefone,
         origem: origem,
+        ...tracking,
         metadados: {
           url_conversao: pendingUrl,
           data_hora: new Date().toISOString(),
