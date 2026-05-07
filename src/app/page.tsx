@@ -9,6 +9,7 @@ import Contact from "@/components/Contact";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import Image from "next/image";
+import Link from "next/link";
 import { Instagram } from "lucide-react";
 import { useLead } from "@/context/LeadContext";
 
@@ -66,20 +67,20 @@ export default function Home() {
       <WhatsAppButton />
       
       {/* Footer */}
-      <footer className="py-12 bg-brand-offwhite border-t border-brand-creme">
-        <div className="container mx-auto px-6 md:px-12 flex flex-col gap-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="relative h-10 w-40">
+      <footer className="py-16 bg-brand-offwhite border-t border-brand-creme">
+        <div className="container mx-auto px-6 md:px-12 flex flex-col gap-16">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-10">
+            <Link href="/" className="relative h-12 w-48 transition-opacity hover:opacity-80">
               <Image
                 src="/images/logo-horizontal-verde-768x169.png"
                 alt="Logo Andrielly Oliveira"
                 fill
                 className="object-contain"
               />
-            </div>
+            </Link>
             
-            <p className="text-brand-navy/40 text-sm text-center md:text-left">
-              © {new Date().getFullYear()} Andrielly Oliveira. Todos os direitos reservados.
+            <p className="text-brand-navy/40 text-sm text-center md:text-left font-medium">
+              © {new Date().getFullYear()} Andrielly Oliveira. <br className="sm:hidden" /> Todos os direitos reservados.
             </p>
 
             <div className="flex gap-6 items-center">
@@ -107,16 +108,16 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col items-center border-t border-brand-creme pt-8">
+          <div className="flex flex-col items-center border-t border-brand-creme pt-10">
             <a 
               href="https://unumpeople.com.br" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex flex-col md:flex-row items-center gap-2 md:gap-3 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all group"
+              className="flex flex-col md:flex-row items-center gap-3 md:gap-4 transition-all group"
             >
-              <span className="text-[10px] uppercase tracking-widest font-bold text-brand-navy">Desenvolvido por</span>
-              <div className="flex items-center gap-2">
-                <div className="relative h-5 w-5">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-brand-navy/20 group-hover:text-brand-navy/60 transition-colors">Desenvolvido por</span>
+              <div className="flex items-center gap-2.5">
+                <div className="relative h-5 w-5 grayscale brightness-[1.4] opacity-20 group-hover:grayscale-0 group-hover:brightness-100 group-hover:opacity-100 transition-all duration-500">
                   <Image
                     src="/images/logo_unum.png"
                     alt="Logo Unum People"
@@ -124,7 +125,9 @@ export default function Home() {
                     className="object-contain"
                   />
                 </div>
-                <span className="text-xs font-bold text-brand-navy tracking-tight">Unum People Creative Solutions</span>
+                <span className="text-xs font-bold text-brand-navy/30 group-hover:text-brand-navy transition-colors tracking-tight">
+                  Unum People <span className="font-medium opacity-40 group-hover:opacity-100">Creative Solutions</span>
+                </span>
               </div>
             </a>
           </div>
