@@ -3,6 +3,12 @@ export interface LeadData {
   email: string;
   telefone: string;
   origem: string;
+  gclid?: string | null;
+  fbclid?: string | null;
+  msclkid?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
   metadados?: Record<string, string>;
 }
 
@@ -27,7 +33,16 @@ export async function sendToCRM(data: LeadData) {
         "X-API-Key": apiKey,
       },
       body: JSON.stringify({
-        ...data,
+        nome: data.nome,
+        email: data.email,
+        telefone: data.telefone,
+        origem: data.origem,
+        gclid: data.gclid,
+        fbclid: data.fbclid,
+        msclkid: data.msclkid,
+        utm_source: data.utm_source,
+        utm_medium: data.utm_medium,
+        utm_campaign: data.utm_campaign,
         metadados: data.metadados || {}
       }),
     });
