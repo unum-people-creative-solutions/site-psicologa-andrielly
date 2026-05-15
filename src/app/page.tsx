@@ -108,27 +108,19 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col items-center border-t border-brand-creme pt-10">
+          <div className="flex flex-col items-center border-t border-brand-creme pt-10 pb-6">
             <a 
               href="https://unumpeople.com.br" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex flex-col md:flex-row items-center gap-3 md:gap-4 transition-all group"
+              className="flex flex-col items-center gap-1 transition-all group"
             >
-              <span className="text-[10px] uppercase tracking-widest font-bold text-brand-navy/20 group-hover:text-brand-navy/60 transition-colors">Desenvolvido por</span>
-              <div className="flex items-center gap-2.5">
-                <div className="relative h-5 w-5 grayscale brightness-[1.4] opacity-20 group-hover:grayscale-0 group-hover:brightness-100 group-hover:opacity-100 transition-all duration-500">
-                  <Image
-                    src="/images/logo_unum.png"
-                    alt="Logo Unum People"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <span className="text-xs font-bold text-brand-navy/30 group-hover:text-brand-navy transition-colors tracking-tight">
-                  Unum People <span className="font-medium opacity-40 group-hover:opacity-100">Creative Solutions</span>
-                </span>
-              </div>
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-brand-navy/30 group-hover:text-brand-navy/60 transition-colors">
+                Desenvolvido por
+              </span>
+              <span className="text-xs font-bold text-brand-navy/40 group-hover:text-brand-navy transition-colors tracking-tight">
+                Unum People <span className="font-medium opacity-50 group-hover:opacity-100">Creative Solutions</span>
+              </span>
             </a>
           </div>
         </div>
