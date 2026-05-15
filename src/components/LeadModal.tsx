@@ -54,35 +54,49 @@ export default function LeadModal() {
 
     setLoading(true);
 
-    try {
-      // 1. Enviar para o CRM
-      await sendToCRM({
-        nome: formData.nome,
-        email: formData.email,
-        telefone: formData.telefone,
-        origem: origem,
-        ...tracking,
-        metadados: {
-          url_conversao: pendingUrl,
-          data_hora: new Date().toISOString(),
-        },
-      });
-
-      // 2. Disparar Google Ads Conversion e Redirecionar
-      if (typeof (window as any).gtag_report_conversion === "function") {
-        (window as any).gtag_report_conversion(pendingUrl);
-      } else {
-        window.location.href = pendingUrl;
-      }
-      
-      closeLeadModal();
-    } catch (error) {
-      console.error("Erro ao processar lead:", error);
-      // Mesmo com erro no CRM, tentamos seguir para o WhatsApp para não perder o paciente
+    // Função de fallback para garantir o redirecionamento
+    const redirectToWhatsApp = () => {
       window.location.href = pendingUrl;
       closeLeadModal();
-    } finally {
       setLoading(false);
+    };
+
+    try {
+      // 1. Tentar enviar para o CRM (Não bloqueante para o usuário)
+      try {
+        await sendToCRM({
+          nome: formData.nome,
+          email: formData.email,
+          telefone: formData.telefone,
+          origem: origem,
+          ...tracking,
+          metadados: {
+            url_conversao: pendingUrl,
+            data_hora: new Date().toISOString(),
+          },
+        });
+      } catch (crmError) {
+        console.error("Erro silencioso no CRM:", crmError);
+        // Prosseguimos mesmo se o CRM falhar
+      }
+
+      // 2. Disparar Google Ads Conversion
+      if (typeof (window as any).gtag_report_conversion === "function") {
+        // A função gtag_report_conversion do Google Ads já lida com o redirecionamento via callback
+        (window as any).gtag_report_conversion(pendingUrl, {
+          email: formData.email,
+          phone: formData.telefone
+        });
+        
+        // Timer de segurança: Se o gtag não redirecionar em 2 segundos, forçamos o redirecionamento
+        setTimeout(redirectToWhatsApp, 2000);
+      } else {
+        redirectToWhatsApp();
+      }
+    } catch (error) {
+      console.error("Erro crítico no processamento do lead:", error);
+      // Em caso de qualquer erro catastrófico, garante que o paciente chegue ao WhatsApp
+      redirectToWhatsApp();
     }
   };
 
