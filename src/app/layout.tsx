@@ -64,18 +64,30 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'AW-17122840229');
+            gtag('config', 'AW-17122840229', {
+              'allow_enhanced_conversions': true
+            });
 
-            window.gtag_report_conversion = function(url) {
+            window.gtag_report_conversion = function(url, userData) {
               var callback = function () {
                 if (typeof(url) != 'undefined') {
                   window.location = url;
                 }
               };
-              gtag('event', 'conversion', {
+
+              var eventParams = {
                   'send_to': 'AW-17122840229/0k8KCMO2jtQaEKWd5-Q_',
                   'event_callback': callback
-              });
+              };
+
+              if (userData) {
+                eventParams['user_data'] = {
+                  'email': userData.email,
+                  'phone_number': userData.phone
+                };
+              }
+
+              gtag('event', 'conversion', eventParams);
               return false;
             }
           `}

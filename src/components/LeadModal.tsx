@@ -70,7 +70,10 @@ export default function LeadModal() {
 
       // 2. Disparar Google Ads Conversion e Redirecionar
       if (typeof (window as any).gtag_report_conversion === "function") {
-        (window as any).gtag_report_conversion(pendingUrl);
+        (window as any).gtag_report_conversion(pendingUrl, {
+          email: formData.email,
+          phone: formData.telefone
+        });
       } else {
         window.location.href = pendingUrl;
       }
