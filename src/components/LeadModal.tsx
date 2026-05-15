@@ -5,10 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2, Phone, Mail, User } from "lucide-react";
 import { useLead } from "@/context/LeadContext";
 import { sendToCRM } from "@/lib/crm";
+import { TextField } from "./ui/TextField";
+import { PhoneField } from "./ui/PhoneField";
 
 export default function LeadModal() {
   const { isOpen, pendingUrl, closeLeadModal } = useLead();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
@@ -33,51 +36,22 @@ export default function LeadModal() {
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const utmSource = params.get("utm_source");
-      const utmMedium = params.get("utm_medium");
-      const utmCampaign = params.get("utm_campaign");
-      const utmContent = params.get("utm_content");
-      const gclid = params.get("gclid");
-      const fbclid = params.get("fbclid");
-      const msclkid = params.get("msclkid");
-
-      setTracking({
-        gclid,
-        fbclid,
-        msclkid,
-        utm_source: utmSource,
-        utm_medium: utmMedium,
-        utm_campaign: utmCampaign,
-      });
-
-      if (utmSource || utmCampaign || gclid || fbclid || msclkid) {
-        const parts = [
-          utmSource && `Source: ${utmSource}`,
-          utmMedium && `Medium: ${utmMedium}`,
-          utmCampaign && `Campaign: ${utmCampaign}`,
-          utmContent && `Content: ${utmContent}`,
-          gclid && `GCLID: ${gclid}`,
-          fbclid && `FBCLID: ${fbclid}`,
-          msclkid && `MSCLKID: ${msclkid}`
-        ].filter(Boolean);
-        setOrigem(parts.join(" | "));
-      } else if (document.referrer) {
-        try {
-          const refUrl = new URL(document.referrer);
-          if (refUrl.hostname !== window.location.hostname) {
-            setOrigem(`Referrer: ${refUrl.hostname}`);
-          }
-        } catch (e) {
-          setOrigem(`Referrer: ${document.referrer}`);
-        }
-      }
+    if (isOpen) {
+      setError(null);
     }
-  }, []);
+  }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    // Validação básica de telefone (mínimo de 11 dígitos: DDD + 9 dígitos)
+    const phoneDigits = formData.telefone.replace(/\D/g, "");
+    if (phoneDigits.length < 11) {
+      setError("Por favor, preencha o WhatsApp com DDD e 9 dígitos.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -149,41 +123,48 @@ export default function LeadModal() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-gold" size={18} />
-                <input
-                  required
-                  type="text"
-                  placeholder="Seu nome completo"
-                  className="w-full bg-white border border-brand-creme rounded-2xl py-4 pl-12 pr-4 text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-gold/20 focus:border-brand-gold transition-all"
-                  value={formData.nome}
-                  onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                />
-              </div>
+              <TextField
+                required
+                icon={User}
+                placeholder="Seu nome completo"
+                value={formData.nome}
+                onChange={(e) => {
+                  setFormData({ ...formData, nome: e.target.value });
+                  if (error) setError(null);
+                }}
+              />
 
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-gold" size={18} />
-                <input
-                  required
-                  type="email"
-                  placeholder="Seu melhor e-mail"
-                  className="w-full bg-white border border-brand-creme rounded-2xl py-4 pl-12 pr-4 text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-gold/20 focus:border-brand-gold transition-all"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </div>
+              <TextField
+                required
+                type="email"
+                icon={Mail}
+                placeholder="Seu melhor e-mail"
+                value={formData.email}
+                onChange={(e) => {
+                  setFormData({ ...formData, email: e.target.value });
+                  if (error) setError(null);
+                }}
+              />
 
-              <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-gold" size={18} />
-                <input
-                  required
-                  type="tel"
-                  placeholder="WhatsApp (com DDD)"
-                  className="w-full bg-white border border-brand-creme rounded-2xl py-4 pl-12 pr-4 text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-gold/20 focus:border-brand-gold transition-all"
-                  value={formData.telefone}
-                  onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
-                />
-              </div>
+              <PhoneField
+                required
+                icon={Phone}
+                value={formData.telefone}
+                onChange={(value) => {
+                  setFormData({ ...formData, telefone: value });
+                  if (error) setError(null);
+                }}
+              />
+
+              {error && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-red-500 text-xs font-medium bg-red-50 p-3 rounded-xl border border-red-100"
+                >
+                  {error}
+                </motion.p>
+              )}
 
               <button
                 disabled={loading}
