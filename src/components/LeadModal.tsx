@@ -9,30 +9,13 @@ import { TextField } from "./ui/TextField";
 import { PhoneField } from "./ui/PhoneField";
 
 export default function LeadModal() {
-  const { isOpen, pendingUrl, closeLeadModal } = useLead();
+  const { isOpen, pendingUrl, closeLeadModal, tracking } = useLead();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
     telefone: "",
-  });
-
-  const [origem, setOrigem] = useState("Direto / Orgânico");
-  const [tracking, setTracking] = useState<{
-    gclid: string | null;
-    fbclid: string | null;
-    msclkid: string | null;
-    utm_source: string | null;
-    utm_medium: string | null;
-    utm_campaign: string | null;
-  }>({
-    gclid: null,
-    fbclid: null,
-    msclkid: null,
-    utm_source: null,
-    utm_medium: null,
-    utm_campaign: null,
   });
 
   useEffect(() => {
@@ -53,6 +36,16 @@ export default function LeadModal() {
     }
 
     setLoading(true);
+
+    // Lógica de Origem baseada na GENERAL_SPEC.md
+    let origem = "Orgânico";
+    if (tracking.gclid) {
+      origem = "Google Ads";
+    } else if (tracking.utm_source === "facebook" || tracking.utm_source === "instagram" || tracking.fbclid) {
+      origem = "Social Ads";
+    } else if (tracking.utm_source) {
+      origem = tracking.utm_source;
+    }
 
     // Função de fallback para garantir o redirecionamento
     const redirectToWhatsApp = () => {
@@ -77,7 +70,6 @@ export default function LeadModal() {
         });
       } catch (crmError) {
         console.error("Erro silencioso no CRM:", crmError);
-        // Prosseguimos mesmo se o CRM falhar
       }
 
       // 2. Disparar Google Ads Conversion
