@@ -4,7 +4,7 @@ Este guia descreve como integrar Landing Pages (LPs) externas com o CRM Unum Peo
 
 ## 1. Endpoint de Ingestão
 
-- **URL:** `https://api.unumpeople.com.br/ingest`
+- **URL:** `${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/ingest`
 - **Método:** `POST`
 - **Autenticação:** Header `X-API-Key`
 
@@ -76,7 +76,7 @@ const leadData = {
 ## 5. Exemplo de Implementação (Fetch API)
 
 ```javascript
-fetch('https://api.unumpeople.com.br/ingest', {
+fetch(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/ingest`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
