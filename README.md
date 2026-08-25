@@ -8,7 +8,7 @@ Para obter o contexto arquitetural completo e consultar o *Single Source of Trut
 
 # Site Institucional - Psicóloga Andrielly Oliveira
 
-Este é o site institucional da **Psicóloga Andrielly Oliveira**, especialista em atendimento infantil, neuropsicologia e avaliação psicológica. O projeto foi concebido para transmitir exclusividade, autoridade técnica e acolhimento, focado em um público de alto padrão.
+Este é o site institucional da **Psicóloga Andrielly Oliveira** (CRP 08/35504), com atuação clínica em atendimento infantil, neuropsicologia e avaliação psicológica. O projeto foi concebido para transmitir exclusividade, autoridade técnica e acolhimento, focado em um público de alto padrão.
 
 ## 🚀 Tecnologias
 
@@ -41,10 +41,15 @@ Este é o site institucional da **Psicóloga Andrielly Oliveira**, especialista 
 │   └── images/      # Ativos visuais (Logos, fotos da psicóloga e da Unum)
 ├── src/
 │   ├── app/         # Rotas, metadados e layout principal
-│   ├── components/  # Seções (Hero, About, Specialties, Methodology, Contact, etc.)
-│   ├── lib/         # Utilitários (Tailwind Merge, etc.)
+│   │   ├── avaliacao-neuropsicologica/  # Landing page de conversão (tráfego pago)
+│   │   └── politica-de-privacidade/     # Exigida pela LGPD para o formulário de lead
+│   ├── components/  # Seções da home (Hero, About, Specialties, Methodology, Contact, etc.)
+│   ├── context/     # LeadContext — estado do modal de captação e tracking
+│   ├── lib/         # Utilitários (CRM, Tailwind Merge, etc.)
 │   └── styles/      # CSS Global e configurações de tema
 ```
+
+A home (`/`) e a landing page de avaliação (`/avaliacao-neuropsicologica`) seguem convenções de renderização diferentes por design — ver [ADR-0002](https://github.com/unum-people-creative-solutions/unum-people-docs/blob/main/decisions/ADR-0002-landing-pages-rsc-first.md) em `unum-people-docs`: a home é `"use client"` na raiz, a LP é Server Components por padrão com ilhas client mínimas, porque tráfego pago em página de saúde mental não tem remarketing — a conversão precisa acontecer na primeira visita.
 
 ## 🛠️ Instalação e Execução
 
@@ -58,7 +63,13 @@ Este é o site institucional da **Psicóloga Andrielly Oliveira**, especialista 
    npm run dev
    ```
 
-3. **Build para Produção:**
+3. **Testes:**
+   ```bash
+   npm test          # roda uma vez
+   npm run test:watch  # modo watch
+   ```
+
+4. **Build para Produção:**
    ```bash
    npm run build
    ```
