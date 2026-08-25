@@ -74,7 +74,7 @@ export default function Contact() {
             className="relative h-[400px] rounded-[32px] overflow-hidden shadow-xl border border-brand-creme"
           >
             <Image
-              src="/images/psiandriellyoliveira-20241201_185536-q.jpg"
+              src="/images/andry_jogos.jpeg"
               alt="Consultório Andrielly Oliveira"
               fill
               className="object-cover"
