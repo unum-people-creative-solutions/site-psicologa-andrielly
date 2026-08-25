@@ -13,7 +13,7 @@ const nextConfig = {
       {
         // Redireciona qualquer caminho que tenha pelo menos 1 caractere após a barra
         // Exclui arquivos do sistema, SEO, imagens e a própria home
-        source: '/:path((?!api|_next|favicon.ico|sitemap.xml|robots.txt|images|icon.png).+)',
+        source: '/:path((?!api|_next|favicon.ico|sitemap.xml|robots.txt|images|icon.png|avaliacao-neuropsicologica|politica-de-privacidade).+)',
         destination: '/',
         permanent: false,
       },
