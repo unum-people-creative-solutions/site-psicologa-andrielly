@@ -26,6 +26,9 @@ describe("sitemap", () => {
     const second = sitemap()[0].lastModified;
 
     expect(first).toEqual(second);
+    // E não é só estável dentro deste teste — é a mesma data literal do
+    // módulo, não um valor calculado uma vez e cacheado por acidente.
+    expect(first).toEqual(new Date("2026-08-25"));
   });
 
   afterEach(() => {
