@@ -71,13 +71,13 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="relative h-[400px] rounded-[32px] overflow-hidden shadow-xl border border-brand-creme"
+            className="relative aspect-square rounded-[32px] overflow-hidden shadow-xl border border-brand-creme"
           >
             <Image
               src="/images/andry_jogos.jpeg"
               alt="Consultório Andrielly Oliveira"
               fill
-              className="object-cover"
+              className="object-cover object-[center_20%]"
             />
             <div className="absolute inset-0 bg-brand-navy/20" />
           </motion.div>
