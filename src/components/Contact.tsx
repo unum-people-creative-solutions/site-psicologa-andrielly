@@ -31,7 +31,7 @@ export default function Contact() {
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-brand-olive mb-1">WhatsApp</p>
                   <a 
-                    href="https://wa.me/5541984873009?text=Olá,%20Dra.%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta." 
+                    href="https://wa.me/5541984873009?text=Olá,%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta." 
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={(e) => {

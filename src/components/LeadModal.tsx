@@ -124,7 +124,7 @@ export default function LeadModal() {
             <div className="mb-8">
               <h3 className="text-2xl font-serif text-brand-navy mb-2">Iniciar Atendimento</h3>
               <p className="text-brand-navy/60 text-sm">
-                Preencha brevemente para que a Dra. Andrielly possa te dar um retorno personalizado.
+                Preencha brevemente para que a psicóloga Andrielly possa te dar um retorno personalizado.
               </p>
             </div>
 
@@ -181,7 +181,7 @@ export default function LeadModal() {
                   <Loader2 className="animate-spin" size={20} />
                 ) : (
                   <>
-                    FALAR COM A DOUTORA
+                    FALAR COM A PSICÓLOGA
                     <motion.span
                       animate={{ x: [0, 5, 0] }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
