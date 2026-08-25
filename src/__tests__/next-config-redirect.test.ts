@@ -16,6 +16,7 @@ function extractRedirectRegex(source: string): RegExp {
 
 describe("next.config.mjs redirect catch-all", () => {
   let redirectRegex: RegExp;
+  let destination: string;
 
   beforeAll(async () => {
     if (!nextConfig.redirects) {
@@ -23,6 +24,11 @@ describe("next.config.mjs redirect catch-all", () => {
     }
     const redirects = await nextConfig.redirects();
     redirectRegex = extractRedirectRegex(redirects[0].source);
+    destination = redirects[0].destination;
+  });
+
+  it("still redirects orphan paths to the home page", () => {
+    expect(destination).toBe("/");
   });
 
   it("does not capture /avaliacao-neuropsicologica", () => {
