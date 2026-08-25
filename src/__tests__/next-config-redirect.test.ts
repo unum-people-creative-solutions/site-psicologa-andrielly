@@ -18,6 +18,9 @@ describe("next.config.mjs redirect catch-all", () => {
   let redirectRegex: RegExp;
 
   beforeAll(async () => {
+    if (!nextConfig.redirects) {
+      throw new Error("next.config.mjs no longer declares a redirects() function");
+    }
     const redirects = await nextConfig.redirects();
     redirectRegex = extractRedirectRegex(redirects[0].source);
   });
