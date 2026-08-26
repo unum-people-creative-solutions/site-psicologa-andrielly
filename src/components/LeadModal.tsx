@@ -12,6 +12,7 @@ export default function LeadModal() {
   const { isOpen, pendingUrl, closeLeadModal, tracking, options } = useLead();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [consentimento, setConsentimento] = useState(false);
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
@@ -21,12 +22,19 @@ export default function LeadModal() {
   useEffect(() => {
     if (isOpen) {
       setError(null);
+      setConsentimento(false);
     }
   }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // Consentimento LGPD (default-deny: nasce desmarcado, bloqueia antes de qualquer outra validação)
+    if (!consentimento) {
+      setError("Você precisa aceitar o uso dos seus dados para que possamos entrar em contato.");
+      return;
+    }
 
     // Validação básica de telefone (mínimo de 11 dígitos: DDD + 9 dígitos)
     const phoneDigits = formData.telefone.replace(/\D/g, "");
@@ -162,6 +170,29 @@ export default function LeadModal() {
                   if (error) setError(null);
                 }}
               />
+
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="lead-modal-consentimento"
+                  checked={consentimento}
+                  onChange={(e) => {
+                    setConsentimento(e.target.checked);
+                    if (error) setError(null);
+                  }}
+                  className="mt-1 h-4 w-4 shrink-0 rounded border-brand-creme text-brand-gold focus:ring-brand-gold/20"
+                />
+                <label htmlFor="lead-modal-consentimento" className="text-xs text-brand-navy/60">
+                  Autorizo o contato da psicóloga Andrielly para retorno sobre o atendimento psicológico, conforme a{" "}
+                  <a
+                    href="/politica-de-privacidade"
+                    className="underline text-brand-navy/70 hover:text-brand-gold"
+                  >
+                    Política de Privacidade
+                  </a>
+                  .
+                </label>
+              </div>
 
               {error && (
                 <motion.p
