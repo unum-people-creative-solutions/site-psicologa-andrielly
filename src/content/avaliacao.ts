@@ -121,6 +121,11 @@ export const sobre = {
     "Atendo no Centro Cívico, em Curitiba, com o objetivo de que cada avaliação termine em orientações que a família consegue aplicar.",
   ],
   localizacao: "Centro Cívico - Curitiba",
+  // Fonte única do endereço — FinalCta e LandingFooter importam daqui.
+  // Antes cada um tinha sua própria string hardcoded e elas haviam
+  // divergido silenciosamente (formatação diferente, uma sem "- PR").
+  enderecoCompleto:
+    "Av. Cândido de Abreu, 526 - Torre B, 6º andar sala 604 - Centro Cívico, Curitiba - PR",
 };
 
 export const ctaFinal = {

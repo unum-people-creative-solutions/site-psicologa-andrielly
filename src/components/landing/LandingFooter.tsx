@@ -8,9 +8,7 @@ export function LandingFooter() {
         <p className="text-brand-olive text-xs font-bold uppercase tracking-wider">
           {sobre.credencial}
         </p>
-        <p className="text-brand-navy/60 text-sm">
-          Av. Cândido de Abreu, 526 - Torre B, 6º andar sala 604 - {sobre.localizacao}
-        </p>
+        <p className="text-brand-navy/60 text-sm">{sobre.enderecoCompleto}</p>
         <a
           href="/politica-de-privacidade"
           className="text-brand-navy/50 text-xs underline hover:text-brand-gold transition-colors"
