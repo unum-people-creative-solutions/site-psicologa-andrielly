@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LeadProvider, useLead, LeadModalOptions } from "@/context/LeadContext";
 import { sendToCRM } from "@/lib/crm";
@@ -361,6 +361,112 @@ describe("LeadModal — sem dado pessoal em storage do navegador (T10)", () => {
     expect(allStorageValues).not.toContain(nome);
     expect(allStorageValues).not.toContain(email);
     expect(allStorageValues).not.toContain(telefoneDigits);
+  });
+});
+
+describe("LeadModal — garantias de LEAD-7 (o paciente sempre chega ao WhatsApp)", () => {
+  beforeEach(() => {
+    vi.mocked(sendToCRM).mockClear();
+    vi.mocked(sendToCRM).mockResolvedValue({});
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    delete (window as any).gtag_report_conversion;
+  });
+
+  it("falha silenciosa no envio ao CRM não impede o redirecionamento, não expõe erro, e ainda dispara a conversão do Ads", async () => {
+    vi.mocked(sendToCRM).mockRejectedValueOnce(new Error("CRM indisponível"));
+    const gtagMock = vi.fn();
+    (window as any).gtag_report_conversion = gtagMock;
+
+    const originalLocation = window.location;
+    Object.defineProperty(window, "location", {
+      value: { href: "" },
+      writable: true,
+      configurable: true,
+    });
+
+    try {
+      const user = userEvent.setup();
+      const pendingUrl = "https://wa.me/5511999999999";
+
+      render(
+        <LeadProvider>
+          <Harness url={pendingUrl} />
+          <LeadModal />
+        </LeadProvider>
+      );
+
+      await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+      await preencherEEnviar(user);
+
+      // A falha do CRM é isolada: a etapa seguinte (conversão do Ads) roda
+      // normalmente. Se o catch interno do CRM sumir, a etapa 2 inteira é
+      // pulada e o redirecionamento passa a depender só do catch externo —
+      // que existe, mas sem disparar a conversão. Esta asserção prova a
+      // diferença: a conversão precisa ter sido chamada mesmo com CRM
+      // falhando, não só o redirecionamento.
+      expect(gtagMock).toHaveBeenCalledTimes(1);
+      expect(screen.queryByText(/erro/i)).not.toBeInTheDocument();
+    } finally {
+      Object.defineProperty(window, "location", {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      });
+    }
+  });
+
+  it("o timer de segurança de 2s redireciona mesmo se o callback do gtag nunca disparar", async () => {
+    const pendingUrl = "https://wa.me/5511999999999";
+    const gtagMock = vi.fn(); // stub que nunca invoca seu event_callback interno
+    (window as any).gtag_report_conversion = gtagMock;
+
+    const originalLocation = window.location;
+    Object.defineProperty(window, "location", {
+      value: { href: "" },
+      writable: true,
+      configurable: true,
+    });
+
+    try {
+      const user = userEvent.setup();
+
+      const { container } = render(
+        <LeadProvider>
+          <Harness url={pendingUrl} />
+          <LeadModal />
+        </LeadProvider>
+      );
+
+      await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+      await preencherCamposValidos(user);
+      await marcarConsentimento(user);
+
+      vi.useFakeTimers();
+
+      const form = container.querySelector("form");
+      if (!form) throw new Error("Formulário não encontrado");
+      fireEvent.submit(form);
+
+      // Deixa o `await sendToCRM(...)` (microtask) resolver e o setTimeout
+      // ser efetivamente agendado, já sob fake timers.
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(gtagMock).toHaveBeenCalledTimes(1);
+      expect(window.location.href).toBe(""); // ainda não redirecionou
+
+      await vi.advanceTimersByTimeAsync(2000);
+
+      expect(window.location.href).toBe(pendingUrl);
+    } finally {
+      Object.defineProperty(window, "location", {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      });
+    }
   });
 });
 
