@@ -142,7 +142,11 @@ export default function LeadModal() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+              <label htmlFor="lead-modal-nome" className="sr-only">
+                Seu nome completo
+              </label>
               <TextField
+                id="lead-modal-nome"
                 required
                 icon={User}
                 placeholder="Seu nome completo"
@@ -153,7 +157,11 @@ export default function LeadModal() {
                 }}
               />
 
+              <label htmlFor="lead-modal-email" className="sr-only">
+                Seu e-mail (opcional)
+              </label>
               <TextField
+                id="lead-modal-email"
                 type="email"
                 icon={Mail}
                 placeholder="Seu e-mail (opcional)"
@@ -164,7 +172,11 @@ export default function LeadModal() {
                 }}
               />
 
+              <label htmlFor="lead-modal-telefone" className="sr-only">
+                Seu WhatsApp, com DDD
+              </label>
               <PhoneField
+                id="lead-modal-telefone"
                 required
                 icon={Phone}
                 value={formData.telefone}

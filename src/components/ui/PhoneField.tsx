@@ -12,16 +12,18 @@ interface PhoneFieldProps {
   className?: string;
   containerClassName?: string;
   icon?: LucideIcon;
+  id?: string;
 }
 
-export function PhoneField({ 
-  value, 
-  onChange, 
-  required, 
-  placeholder = "WhatsApp (com DDD)", 
-  className, 
+export function PhoneField({
+  value,
+  onChange,
+  required,
+  placeholder = "WhatsApp (com DDD)",
+  className,
   containerClassName,
-  icon: Icon 
+  icon: Icon,
+  id
 }: PhoneFieldProps) {
   return (
     <div className={cn("relative", containerClassName)}>
@@ -40,6 +42,7 @@ export function PhoneField({
         {((inputProps: any) => (
           <input
             {...inputProps}
+            id={id}
             type="tel"
             required={required}
             placeholder={placeholder}

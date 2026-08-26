@@ -470,3 +470,31 @@ describe("LeadModal — garantias de LEAD-7 (o paciente sempre chega ao WhatsApp
   });
 });
 
+
+describe("LeadModal — todo campo tem <label> associado", () => {
+  it("nome, e-mail e telefone são localizáveis por getByRole com accessible name — não só por placeholder", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+
+    // getByRole com `name` só resolve se houver um <label htmlFor> (ou
+    // aria-label/aria-labelledby) associado ao input — placeholder sozinho
+    // não produz accessible name suficiente para esta query.
+    expect(
+      screen.getByRole("textbox", { name: /seu nome completo/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: /seu e-mail \(opcional\)/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: /seu whatsapp, com ddd/i })
+    ).toBeInTheDocument();
+  });
+});
