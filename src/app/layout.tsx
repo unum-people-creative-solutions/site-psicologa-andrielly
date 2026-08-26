@@ -68,7 +68,7 @@ export default function RootLayout({
               'allow_enhanced_conversions': true
             });
 
-            window.gtag_report_conversion = function(url, userData) {
+            window.gtag_report_conversion = function(url, userData, sendTo) {
               var callback = function () {
                 if (typeof(url) != 'undefined') {
                   window.location = url;
@@ -76,7 +76,7 @@ export default function RootLayout({
               };
 
               var eventParams = {
-                  'send_to': 'AW-17122840229/0k8KCMO2jtQaEKWd5-Q_',
+                  'send_to': sendTo || 'AW-17122840229/0k8KCMO2jtQaEKWd5-Q_',
                   'event_callback': callback
               };
 
