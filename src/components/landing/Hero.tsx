@@ -22,6 +22,7 @@ export function Hero() {
             src="/images/psiandriellyoliveira-20250319_153010.jpg"
             alt="Andrielly Oliveira, psicóloga"
             fill
+            sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover"
             priority
           />

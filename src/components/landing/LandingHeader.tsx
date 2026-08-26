@@ -17,6 +17,7 @@ export function LandingHeader() {
             src="/images/logo-horizontal-verde-768x169.png"
             alt="Logo Andrielly Oliveira"
             fill
+            sizes="(min-width: 640px) 192px, 128px"
             className="object-contain"
             priority
           />
