@@ -330,3 +330,37 @@ describe("LeadModal — rótulo de conversão do Google Ads (LEAD-6, LEAD-7)", (
   });
 });
 
+describe("LeadModal — sem dado pessoal em storage do navegador (T10)", () => {
+  beforeEach(() => {
+    vi.mocked(sendToCRM).mockClear();
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  it("T10: nome, e-mail e telefone não aparecem em localStorage nem sessionStorage após o submit", async () => {
+    const user = userEvent.setup();
+    const nome = "Maria Silva";
+    const email = "maria@example.com";
+    const telefoneDigits = "11987654321";
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherEEnviar(user);
+
+    const allStorageValues = [
+      ...Array.from({ length: localStorage.length }, (_, i) => localStorage.getItem(localStorage.key(i)!)),
+      ...Array.from({ length: sessionStorage.length }, (_, i) => sessionStorage.getItem(sessionStorage.key(i)!)),
+    ].join(" ");
+
+    expect(allStorageValues).not.toContain(nome);
+    expect(allStorageValues).not.toContain(email);
+    expect(allStorageValues).not.toContain(telefoneDigits);
+  });
+});
+
