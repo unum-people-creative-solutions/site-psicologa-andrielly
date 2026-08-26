@@ -4,7 +4,11 @@ import { motion } from "framer-motion";
 import WhatsAppIcon from "./WhatsAppIcon";
 import { useLead } from "@/context/LeadContext";
 
-export default function WhatsAppButton() {
+interface WhatsAppButtonProps {
+  origem?: string;
+}
+
+export default function WhatsAppButton({ origem }: WhatsAppButtonProps = {}) {
   const { openLeadModal } = useLead();
 
   return (
@@ -14,7 +18,8 @@ export default function WhatsAppButton() {
       rel="noopener noreferrer"
       onClick={(e) => {
         e.preventDefault();
-        openLeadModal((e.currentTarget as HTMLAnchorElement).href);
+        const href = (e.currentTarget as HTMLAnchorElement).href;
+        openLeadModal(href, origem ? { origem } : undefined);
       }}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
