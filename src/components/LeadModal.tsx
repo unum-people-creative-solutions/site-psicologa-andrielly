@@ -83,11 +83,19 @@ export default function LeadModal() {
 
       // 2. Disparar Google Ads Conversion
       if (typeof (window as any).gtag_report_conversion === "function") {
+        // Enhanced conversions (envio de e-mail/telefone) é vedado pela
+        // política de dados de cliente do Google Ads para categorias
+        // sensíveis — saúde está listada explicitamente. Conversões desta
+        // LP (avaliação psicológica) não enviam userData; a atribuição
+        // segue funcionando via clique (gclid), só perde a correspondência
+        // aprimorada por hash de e-mail/telefone. Decisão D-C.
+        const isConversaoDeSaude = (options.origem ?? "").startsWith("LP Avaliação");
+        const userData = isConversaoDeSaude
+          ? undefined
+          : { email: formData.email, phone: formData.telefone };
+
         // A função gtag_report_conversion do Google Ads já lida com o redirecionamento via callback
-        (window as any).gtag_report_conversion(pendingUrl, {
-          email: formData.email,
-          phone: formData.telefone
-        }, options.conversionLabel);
+        (window as any).gtag_report_conversion(pendingUrl, userData, options.conversionLabel);
         
         // Timer de segurança: Se o gtag não redirecionar em 2 segundos, forçamos o redirecionamento
         setTimeout(redirectToWhatsApp, 2000);

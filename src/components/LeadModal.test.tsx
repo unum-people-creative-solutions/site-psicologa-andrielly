@@ -456,6 +456,47 @@ describe("LeadModal — rótulo de conversão do Google Ads (LEAD-6, LEAD-7)", (
     expect(gtagMock.mock.calls[0][2]).toBe("AW-XXX/custom-label");
   });
 
+  it("D-C: conversão originada da LP ('LP Avaliação') NÃO envia userData (e-mail/telefone) — política de saúde do Google Ads veda enhanced conversions para categoria sensível", async () => {
+    const gtagMock = vi.fn();
+    (window as any).gtag_report_conversion = gtagMock;
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" origem="LP Avaliação" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherEEnviar(user);
+
+    expect(gtagMock).toHaveBeenCalledTimes(1);
+    expect(gtagMock.mock.calls[0][1]).toBeUndefined();
+  });
+
+  it("D-C: conversão da home (sem origem de LP) continua enviando userData normalmente", async () => {
+    const gtagMock = vi.fn();
+    (window as any).gtag_report_conversion = gtagMock;
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherEEnviar(user);
+
+    expect(gtagMock).toHaveBeenCalledTimes(1);
+    expect(gtagMock.mock.calls[0][1]).toEqual({
+      email: "maria@example.com",
+      phone: "(11) 98765-4321",
+    });
+  });
+
   it("T-LEAD-7: gtag_report_conversion indefinido não bloqueia o redirecionamento ao WhatsApp", async () => {
     delete (window as any).gtag_report_conversion;
 
