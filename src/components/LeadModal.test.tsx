@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LeadProvider, useLead, LeadModalOptions } from "@/context/LeadContext";
@@ -242,6 +242,91 @@ describe("LeadModal — copy variável (LEAD-5)", () => {
     expect(screen.getByRole("heading", { name: "Agende sua Avaliação" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /QUERO AGENDAR/i })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Iniciar Atendimento" })).not.toBeInTheDocument();
+  });
+});
+
+describe("LeadModal — rótulo de conversão do Google Ads (LEAD-6, LEAD-7)", () => {
+  beforeEach(() => {
+    vi.mocked(sendToCRM).mockClear();
+  });
+
+  afterEach(() => {
+    delete (window as any).gtag_report_conversion;
+  });
+
+  it("T09: sem options.conversionLabel, repassa undefined como terceiro argumento do gtag", async () => {
+    const gtagMock = vi.fn();
+    (window as any).gtag_report_conversion = gtagMock;
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherEEnviar(user);
+
+    expect(gtagMock).toHaveBeenCalledTimes(1);
+    expect(gtagMock.mock.calls[0][2]).toBeUndefined();
+  });
+
+  it("T09: com options.conversionLabel, repassa o rótulo customizado como terceiro argumento do gtag", async () => {
+    const gtagMock = vi.fn();
+    (window as any).gtag_report_conversion = gtagMock;
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness
+          url="https://wa.me/5511999999999"
+          options={{ conversionLabel: "AW-XXX/custom-label" }}
+        />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherEEnviar(user);
+
+    expect(gtagMock).toHaveBeenCalledTimes(1);
+    expect(gtagMock.mock.calls[0][2]).toBe("AW-XXX/custom-label");
+  });
+
+  it("T-LEAD-7: gtag_report_conversion indefinido não bloqueia o redirecionamento ao WhatsApp", async () => {
+    delete (window as any).gtag_report_conversion;
+
+    const originalLocation = window.location;
+    Object.defineProperty(window, "location", {
+      value: { href: "" },
+      writable: true,
+      configurable: true,
+    });
+
+    try {
+      const user = userEvent.setup();
+      const pendingUrl = "https://wa.me/5511999999999";
+
+      render(
+        <LeadProvider>
+          <Harness url={pendingUrl} />
+          <LeadModal />
+        </LeadProvider>
+      );
+
+      await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+      await preencherEEnviar(user);
+
+      expect(window.location.href).toBe(pendingUrl);
+    } finally {
+      Object.defineProperty(window, "location", {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      });
+    }
   });
 });
 

@@ -87,7 +87,7 @@ export default function LeadModal() {
         (window as any).gtag_report_conversion(pendingUrl, {
           email: formData.email,
           phone: formData.telefone
-        });
+        }, options.conversionLabel);
         
         // Timer de segurança: Se o gtag não redirecionar em 2 segundos, forçamos o redirecionamento
         setTimeout(redirectToWhatsApp, 2000);
