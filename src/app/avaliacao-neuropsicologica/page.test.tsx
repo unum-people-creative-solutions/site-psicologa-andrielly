@@ -1,0 +1,118 @@
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { LeadProvider, useLead } from "@/context/LeadContext";
+import { faq } from "@/content/avaliacao-faq";
+import AvaliacaoNeuropsicologicaPage from "./page";
+
+/**
+ * page.tsx é Server Component (sem "use client"), mas precisa do
+ * LeadProvider (client) em volta para renderizar em teste — no app real
+ * isso vem do layout.tsx raiz. Reproduz a mesma composição aqui.
+ */
+function renderPage() {
+  return render(
+    <LeadProvider>
+      <AvaliacaoNeuropsicologicaPage />
+    </LeadProvider>
+  );
+}
+
+function OpenState() {
+  const { isOpen, options } = useLead();
+  return <div data-testid="open-state">{JSON.stringify({ isOpen, options })}</div>;
+}
+
+describe("Página de avaliação — T01: CTA abre o modal com a origem da LP", () => {
+  it("qualquer CTA da página dispara openLeadModal com origem 'LP Avaliação'", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <AvaliacaoNeuropsicologicaPage />
+        <OpenState />
+      </LeadProvider>
+    );
+
+    const ctas = screen.getAllByRole("link", { name: /falar com a psicóloga|entenda se a avaliação/i });
+    expect(ctas.length).toBeGreaterThan(0);
+
+    await user.click(ctas[0]);
+
+    const state = JSON.parse(screen.getByTestId("open-state").textContent!);
+    expect(state.isOpen).toBe(true);
+    expect(state.options.origem).toBe("LP Avaliação");
+  });
+});
+
+describe("Página de avaliação — T04: instrumentos só aparecem no FAQ", () => {
+  it("nenhuma sigla de instrumento aparece fora da seção do FAQ", () => {
+    renderPage();
+
+    // A pergunta do FAQ que menciona "WISC" fica sempre visível (só a
+    // resposta é condicional) — por isso a checagem certa é "fora da
+    // seção do FAQ", não "com o accordion fechado".
+    const perguntaWisc = screen.getByText(/o médico pediu para eu fazer o wisc/i);
+    const faqSection = perguntaWisc.closest("section");
+    if (!faqSection) throw new Error("Seção do FAQ não encontrada (nenhum <section> ancestral)");
+
+    const textoDaSecaoFaq = faqSection.textContent ?? "";
+    const textoForaDoFaq = (document.body.textContent ?? "").replace(textoDaSecaoFaq, "");
+
+    expect(textoForaDoFaq).not.toMatch(/WISC|WAIS|RAVLT|TAVIS|HTP/);
+  });
+
+  it("abrindo a pergunta do WISC, a resposta correspondente aparece", async () => {
+    const user = userEvent.setup();
+    renderPage();
+    const itemWisc = faq.find((f) => /WISC/.test(f.pergunta));
+    if (!itemWisc) throw new Error("Item de FAQ do WISC não encontrado em avaliacao-faq.ts");
+
+    const pergunta = screen.getByText(itemWisc.pergunta);
+    await user.click(pergunta);
+
+    expect(screen.getByText(itemWisc.resposta)).toBeInTheDocument();
+  });
+});
+
+describe("Página de avaliação — T05: guarda de conformidade ética", () => {
+  it("não contém termos vedados pelo Art. 20 em nenhum lugar da página renderizada", () => {
+    renderPage();
+    const bodyText = (document.body.textContent ?? "").toLowerCase();
+
+    expect(bodyText).not.toMatch(/garant/);
+    expect(bodyText).not.toMatch(/padrão ouro/);
+    expect(bodyText).not.toMatch(/excelência internacional/);
+    expect(bodyText).not.toMatch(/a melhor/);
+    expect(bodyText).not.toMatch(/gratuit/);
+    expect(bodyText).not.toMatch(/dra\./);
+    expect(bodyText).not.toMatch(/especialista/);
+  });
+});
+
+describe("Página de avaliação — T06: credencial visível", () => {
+  it("declara 'psicóloga' e 'CRP 08/35504'", () => {
+    renderPage();
+    const bodyText = document.body.textContent ?? "";
+
+    expect(bodyText).toMatch(/psicóloga/i);
+    expect(bodyText).toMatch(/CRP 08\/35504/);
+  });
+});
+
+describe("Página de avaliação — T08: escala de classificação fora do FAQ", () => {
+  it("não contém 'muito inferior' nem 'média inferior' com o FAQ fechado", () => {
+    renderPage();
+    const bodyText = (document.body.textContent ?? "").toLowerCase();
+
+    expect(bodyText).not.toMatch(/muito inferior/);
+    expect(bodyText).not.toMatch(/média inferior/);
+  });
+});
+
+describe("Página de avaliação — estrutura", () => {
+  it("tem exatamente um <h1>", () => {
+    renderPage();
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+});
