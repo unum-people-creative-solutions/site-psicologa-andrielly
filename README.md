@@ -51,6 +51,22 @@ Este é o site institucional da **Psicóloga Andrielly Oliveira** (CRP 08/35504)
 
 A home (`/`) e a landing page de avaliação (`/avaliacao-neuropsicologica`) seguem convenções de renderização diferentes por design — ver [ADR-0002](https://github.com/unum-people-creative-solutions/unum-people-docs/blob/main/decisions/ADR-0002-landing-pages-rsc-first.md) em `unum-people-docs`: a home é `"use client"` na raiz, a LP é Server Components por padrão com ilhas client mínimas, porque tráfego pago em página de saúde mental não tem remarketing — a conversão precisa acontecer na primeira visita.
 
+### Captura de lead (`LeadContext` / `LeadModal`)
+
+`openLeadModal(url)` continua funcionando como sempre (usado pelos 5 pontos de conversão da home). Um segundo argumento opcional permite customizar o modal sem duplicá-lo:
+
+```ts
+openLeadModal(url, {
+  origem: "LP Avaliação",        // vence a origem derivada de gclid/utm_source
+  conversionLabel: "AW-XXX/...", // rótulo de conversão do Google Ads desta origem
+  title: "Agende sua Avaliação",
+  description: "...",
+  submitLabel: "QUERO AGENDAR",
+});
+```
+
+O envio exige um checkbox de consentimento LGPD marcado (vale para os dois formulários, home e LP, porque o `LeadModal` é compartilhado) e o e-mail é opcional — só nome e WhatsApp são obrigatórios.
+
 ## 🛠️ Instalação e Execução
 
 1. **Instalar dependências:**
