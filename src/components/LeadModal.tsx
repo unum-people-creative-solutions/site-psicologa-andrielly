@@ -9,9 +9,10 @@ import { TextField } from "./ui/TextField";
 import { PhoneField } from "./ui/PhoneField";
 
 export default function LeadModal() {
-  const { isOpen, pendingUrl, closeLeadModal, tracking } = useLead();
+  const { isOpen, pendingUrl, closeLeadModal, tracking, options } = useLead();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [consentimento, setConsentimento] = useState(false);
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
@@ -21,12 +22,19 @@ export default function LeadModal() {
   useEffect(() => {
     if (isOpen) {
       setError(null);
+      setConsentimento(false);
     }
   }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // Consentimento LGPD (default-deny: nasce desmarcado, bloqueia antes de qualquer outra validação)
+    if (!consentimento) {
+      setError("Você precisa aceitar o uso dos seus dados para que possamos entrar em contato.");
+      return;
+    }
 
     // Validação básica de telefone (mínimo de 11 dígitos: DDD + 9 dígitos)
     const phoneDigits = formData.telefone.replace(/\D/g, "");
@@ -46,6 +54,7 @@ export default function LeadModal() {
     } else if (tracking.utm_source) {
       origem = tracking.utm_source;
     }
+    origem = options.origem ?? origem;
 
     // Função de fallback para garantir o redirecionamento
     const redirectToWhatsApp = () => {
@@ -74,11 +83,19 @@ export default function LeadModal() {
 
       // 2. Disparar Google Ads Conversion
       if (typeof (window as any).gtag_report_conversion === "function") {
+        // Enhanced conversions (envio de e-mail/telefone) é vedado pela
+        // política de dados de cliente do Google Ads para categorias
+        // sensíveis — saúde está listada explicitamente. Conversões desta
+        // LP (avaliação psicológica) não enviam userData; a atribuição
+        // segue funcionando via clique (gclid), só perde a correspondência
+        // aprimorada por hash de e-mail/telefone. Decisão D-C.
+        const isConversaoDeSaude = (options.origem ?? "").startsWith("LP Avaliação");
+        const userData = isConversaoDeSaude
+          ? undefined
+          : { email: formData.email, phone: formData.telefone };
+
         // A função gtag_report_conversion do Google Ads já lida com o redirecionamento via callback
-        (window as any).gtag_report_conversion(pendingUrl, {
-          email: formData.email,
-          phone: formData.telefone
-        });
+        (window as any).gtag_report_conversion(pendingUrl, userData, options.conversionLabel);
         
         // Timer de segurança: Se o gtag não redirecionar em 2 segundos, forçamos o redirecionamento
         setTimeout(redirectToWhatsApp, 2000);
@@ -93,6 +110,12 @@ export default function LeadModal() {
   };
 
   if (!isOpen) return null;
+
+  const title = options.title ?? "Iniciar Atendimento";
+  const description =
+    options.description ??
+    "Preencha brevemente para que a psicóloga Andrielly possa te dar um retorno personalizado.";
+  const submitLabel = options.submitLabel ?? "FALAR COM A PSICÓLOGA";
 
   return (
     <AnimatePresence>
@@ -122,14 +145,16 @@ export default function LeadModal() {
 
           <div className="p-8 md:p-10">
             <div className="mb-8">
-              <h3 className="text-2xl font-serif text-brand-navy mb-2">Iniciar Atendimento</h3>
-              <p className="text-brand-navy/60 text-sm">
-                Preencha brevemente para que a Dra. Andrielly possa te dar um retorno personalizado.
-              </p>
+              <h3 className="text-2xl font-serif text-brand-navy mb-2">{title}</h3>
+              <p className="text-brand-navy/60 text-sm">{description}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+              <label htmlFor="lead-modal-nome" className="sr-only">
+                Seu nome completo
+              </label>
               <TextField
+                id="lead-modal-nome"
                 required
                 icon={User}
                 placeholder="Seu nome completo"
@@ -140,11 +165,14 @@ export default function LeadModal() {
                 }}
               />
 
+              <label htmlFor="lead-modal-email" className="sr-only">
+                Seu e-mail (opcional)
+              </label>
               <TextField
-                required
+                id="lead-modal-email"
                 type="email"
                 icon={Mail}
-                placeholder="Seu melhor e-mail"
+                placeholder="Seu e-mail (opcional)"
                 value={formData.email}
                 onChange={(e) => {
                   setFormData({ ...formData, email: e.target.value });
@@ -152,7 +180,11 @@ export default function LeadModal() {
                 }}
               />
 
+              <label htmlFor="lead-modal-telefone" className="sr-only">
+                Seu WhatsApp, com DDD
+              </label>
               <PhoneField
+                id="lead-modal-telefone"
                 required
                 icon={Phone}
                 value={formData.telefone}
@@ -161,6 +193,29 @@ export default function LeadModal() {
                   if (error) setError(null);
                 }}
               />
+
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="lead-modal-consentimento"
+                  checked={consentimento}
+                  onChange={(e) => {
+                    setConsentimento(e.target.checked);
+                    if (error) setError(null);
+                  }}
+                  className="mt-1 h-4 w-4 shrink-0 rounded border-brand-creme text-brand-gold focus:ring-brand-gold/20"
+                />
+                <label htmlFor="lead-modal-consentimento" className="text-xs text-brand-navy/60">
+                  Autorizo o contato da psicóloga Andrielly para retorno sobre o atendimento psicológico, conforme a{" "}
+                  <a
+                    href="/politica-de-privacidade"
+                    className="underline text-brand-navy/70 hover:text-brand-gold"
+                  >
+                    Política de Privacidade
+                  </a>
+                  .
+                </label>
+              </div>
 
               {error && (
                 <motion.p
@@ -181,7 +236,7 @@ export default function LeadModal() {
                   <Loader2 className="animate-spin" size={20} />
                 ) : (
                   <>
-                    FALAR COM A DOUTORA
+                    {submitLabel}
                     <motion.span
                       animate={{ x: [0, 5, 0] }}
                       transition={{ repeat: Infinity, duration: 1.5 }}

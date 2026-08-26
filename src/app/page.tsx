@@ -93,7 +93,7 @@ export default function Home() {
                 <span className="hidden sm:inline">Instagram</span>
               </a>
               <a 
-                href="https://wa.me/5541984873009?text=Olá,%20Dra.%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta." 
+                href="https://wa.me/5541984873009?text=Olá,%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta." 
                 target="_blank" 
                 rel="noopener noreferrer"
                 onClick={(e) => {

@@ -11,12 +11,21 @@ interface TrackingParams {
   utm_campaign: string | null;
 }
 
+export interface LeadModalOptions {
+  origem?: string;
+  conversionLabel?: string;
+  title?: string;
+  description?: string;
+  submitLabel?: string;
+}
+
 interface LeadContextType {
   isOpen: boolean;
   pendingUrl: string;
-  openLeadModal: (url: string) => void;
+  openLeadModal: (url: string, options?: LeadModalOptions) => void;
   closeLeadModal: () => void;
   tracking: TrackingParams;
+  options: LeadModalOptions;
 }
 
 const LeadContext = createContext<LeadContextType | undefined>(undefined);
@@ -24,6 +33,7 @@ const LeadContext = createContext<LeadContextType | undefined>(undefined);
 export function LeadProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [pendingUrl, setPendingUrl] = useState("");
+  const [options, setOptions] = useState<LeadModalOptions>({});
   const [tracking, setTracking] = useState<TrackingParams>({
     gclid: null,
     fbclid: null,
@@ -60,18 +70,20 @@ export function LeadProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const openLeadModal = (url: string) => {
+  const openLeadModal = (url: string, options: LeadModalOptions = {}) => {
     setPendingUrl(url);
+    setOptions(options);
     setIsOpen(true);
   };
 
   const closeLeadModal = () => {
     setIsOpen(false);
     setPendingUrl("");
+    setOptions({});
   };
 
   return (
-    <LeadContext.Provider value={{ isOpen, pendingUrl, openLeadModal, closeLeadModal, tracking }}>
+    <LeadContext.Provider value={{ isOpen, pendingUrl, openLeadModal, closeLeadModal, tracking, options }}>
       {children}
     </LeadContext.Provider>
   );

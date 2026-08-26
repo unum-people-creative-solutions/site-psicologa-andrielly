@@ -4,17 +4,22 @@ import { motion } from "framer-motion";
 import WhatsAppIcon from "./WhatsAppIcon";
 import { useLead } from "@/context/LeadContext";
 
-export default function WhatsAppButton() {
+interface WhatsAppButtonProps {
+  origem?: string;
+}
+
+export default function WhatsAppButton({ origem }: WhatsAppButtonProps = {}) {
   const { openLeadModal } = useLead();
 
   return (
     <motion.a
-      href="https://wa.me/5541984873009?text=Olá,%20Dra.%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta."
+      href="https://wa.me/5541984873009?text=Olá,%20Andrielly!%20Gostaria%20de%20agendar%20uma%20consulta."
       target="_blank"
       rel="noopener noreferrer"
       onClick={(e) => {
         e.preventDefault();
-        openLeadModal((e.currentTarget as HTMLAnchorElement).href);
+        const href = (e.currentTarget as HTMLAnchorElement).href;
+        openLeadModal(href, origem ? { origem } : undefined);
       }}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
