@@ -74,6 +74,14 @@ O envio exige um checkbox de consentimento LGPD marcado (vale para os dois formu
 
 Todo texto que a LP de avaliação renderiza vive em `avaliacao.ts` (seções) e `avaliacao-faq.ts` (as 7 perguntas do FAQ — usadas também como fonte do JSON-LD `FAQPage`). Nenhum componente escreve prosa nova diretamente no JSX: isso é o que permite os testes de guarda de conformidade ética (`avaliacao.test.ts`, `page.test.tsx`) varrerem a página inteira contra os termos vedados pelo Art. 20 do Código de Ética (promessa de resultado, preço, superlativo) sem depender de revisão manual a cada edição de copy.
 
+### Medição da LP (Google Ads)
+
+O CTA flutuante e os CTAs de seção da LP reportam conversão com `origem` própria ("LP Avaliação" / "LP Avaliação - Flutuante"), segregada da home. `LeadCta` aceita um `conversionLabel` opcional — ainda não usado em produção porque o rótulo de conversão específico da LP não foi criado na conta do Google Ads (pendência rastreada como D-B). **Enhanced conversions está desligado para conversões da LP**: a política de dados de cliente do Google Ads veda o envio de e-mail/telefone (`user_data`) para categorias sensíveis, e saúde é uma delas — ver `src/components/LeadModal.tsx`. A atribuição da LP continua funcionando via `gclid`; só a correspondência aprimorada por hash foi desligada.
+
+### Performance
+
+`/avaliacao-neuropsicologica` mede ~107 KB gzip de First Load JS (orçamento: <120 KB) e LCP na casa de 1,5s em ambiente local — o botão flutuante de WhatsApp da LP usa uma variante CSS-only do `LeadCta` (`variant="floating"`) em vez do `WhatsAppButton` compartilhado da home, que depende de `framer-motion` e adicionaria ~40 KB gzip sem necessidade. A medição de LCP local (`localhost`, sem CDN/HTTP2) tem variação real conforme o modo de throttling do Lighthouse — vale reconfirmar contra a URL de produção após o deploy.
+
 ## 🛠️ Instalação e Execução
 
 1. **Instalar dependências:**
