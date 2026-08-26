@@ -22,7 +22,7 @@ export function Process() {
               key={etapa.passo}
               className="bg-white p-8 rounded-2xl shadow-sm border border-brand-nude/30"
             >
-              <span className="text-4xl font-serif text-brand-gold/50 mb-4 block">
+              <span className="text-4xl font-serif text-brand-navy/50 mb-4 block">
                 {String(etapa.passo).padStart(2, "0")}
               </span>
               <h3 className="text-xl font-serif text-brand-navy mb-2">
@@ -31,7 +31,7 @@ export function Process() {
               <p className="text-brand-olive text-xs font-bold uppercase tracking-wider mb-4">
                 {etapa.duracao}
               </p>
-              <p className="text-brand-navy/60 text-sm leading-relaxed">
+              <p className="text-brand-navy/70 text-sm leading-relaxed">
                 {etapa.descricao}
               </p>
             </li>

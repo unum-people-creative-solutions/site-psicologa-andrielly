@@ -15,7 +15,7 @@ export function AboutProfessional() {
           ))}
         </div>
 
-        <p className="mt-10 text-brand-navy/60 text-sm font-bold uppercase tracking-wider border-t border-brand-nude/30 pt-6">
+        <p className="mt-10 text-brand-navy/70 text-sm font-bold uppercase tracking-wider border-t border-brand-nude/30 pt-6">
           {sobre.localizacao}
         </p>
       </div>

@@ -14,7 +14,7 @@ export function Hero() {
             {hero.subtitle}
           </p>
           <LeadCta label={hero.ctaLabel} variant="primary" />
-          <p className="mt-4 text-sm text-brand-navy/60">{hero.credencial}</p>
+          <p className="mt-4 text-sm text-brand-navy/70">{hero.credencial}</p>
         </div>
 
         <div className="relative h-[400px] md:h-[560px] w-full rounded-3xl overflow-hidden border-8 border-white shadow-2xl">

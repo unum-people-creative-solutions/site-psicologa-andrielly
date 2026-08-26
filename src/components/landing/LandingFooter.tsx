@@ -8,14 +8,14 @@ export function LandingFooter() {
         <p className="text-brand-olive text-xs font-bold uppercase tracking-wider">
           {sobre.credencial}
         </p>
-        <p className="text-brand-navy/60 text-sm">{sobre.enderecoCompleto}</p>
+        <p className="text-brand-navy/70 text-sm">{sobre.enderecoCompleto}</p>
         <a
           href="/politica-de-privacidade"
-          className="text-brand-navy/50 text-xs underline hover:text-brand-gold transition-colors"
+          className="text-brand-navy/70 text-xs underline hover:text-brand-gold transition-colors"
         >
           Política de Privacidade
         </a>
-        <p className="text-brand-navy/30 text-[10px] uppercase tracking-widest font-bold mt-4">
+        <p className="text-brand-navy/70 text-[10px] uppercase tracking-widest font-bold mt-4">
           Desenvolvido por Unum People Creative Solutions
         </p>
       </div>

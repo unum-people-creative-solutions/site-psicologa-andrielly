@@ -26,9 +26,11 @@ describe("Arquitetura da LP — SEC-7: Server Components por padrão", () => {
   });
 
   it("nenhum componente da LP importa framer-motion", () => {
+    // Checa a linha de import de verdade — um comentário explicando por
+    // que framer-motion foi evitado (como este arquivo tem) não conta.
     const withFramerMotion = componentFiles.filter((f) => {
       const content = readFileSync(path.join(dir, f), "utf-8");
-      return content.includes("framer-motion");
+      return /^\s*import\b.*["']framer-motion["']/m.test(content);
     });
 
     expect(withFramerMotion).toEqual([]);

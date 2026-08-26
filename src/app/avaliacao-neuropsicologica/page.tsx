@@ -10,7 +10,7 @@ import { EvaluationTypes } from "@/components/landing/EvaluationTypes";
 import { AboutProfessional } from "@/components/landing/AboutProfessional";
 import { Faq } from "@/components/landing/Faq";
 import { FinalCta } from "@/components/landing/FinalCta";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import { LeadCta } from "@/components/landing/LeadCta";
 import { faq } from "@/content/avaliacao-faq";
 
 const PAGE_URL = "https://psiandriellyoliveira.com.br/avaliacao-neuropsicologica";
@@ -106,7 +106,11 @@ export default function AvaliacaoNeuropsicologicaPage() {
         <FinalCta />
       </main>
       <LandingFooter />
-      <WhatsAppButton origem="LP Avaliação - Flutuante" />
+      <LeadCta
+        label="Contato via WhatsApp"
+        variant="floating"
+        origem="LP Avaliação - Flutuante"
+      />
     </>
   );
 }

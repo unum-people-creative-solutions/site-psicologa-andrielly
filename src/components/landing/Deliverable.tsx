@@ -20,7 +20,7 @@ export function Deliverable() {
               <h3 className="text-xl font-serif text-brand-navy mb-4">
                 {item.title}
               </h3>
-              <p className="text-brand-navy/60 text-sm leading-relaxed">
+              <p className="text-brand-navy/70 text-sm leading-relaxed">
                 {item.body}
               </p>
             </div>

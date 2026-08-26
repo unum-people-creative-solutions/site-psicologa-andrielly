@@ -8,8 +8,11 @@ import { LeadCta } from "./LeadCta";
 export function LandingHeader() {
   return (
     <header className="fixed w-full bg-brand-offwhite/90 backdrop-blur-md shadow-sm z-[60] h-24 flex items-center">
-      <div className="container mx-auto px-6 md:px-12 flex justify-between items-center w-full">
-        <Link href="/" className="relative h-12 w-48 transition-opacity hover:opacity-80">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 flex justify-between items-center gap-3 w-full">
+        <Link
+          href="/"
+          className="relative h-9 w-32 sm:h-12 sm:w-48 shrink-0 transition-opacity hover:opacity-80"
+        >
           <Image
             src="/images/logo-horizontal-verde-768x169.png"
             alt="Logo Andrielly Oliveira"
@@ -22,7 +25,7 @@ export function LandingHeader() {
         <LeadCta
           label={headerCtaLabel}
           variant="primary"
-          className="px-6 py-2 text-sm"
+          className="px-4 py-2 text-xs whitespace-nowrap sm:px-6 sm:text-sm"
         />
       </div>
     </header>
