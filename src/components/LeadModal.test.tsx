@@ -103,6 +103,11 @@ describe("LeadModal — precedência de origem (LEAD-1, LEAD-2)", () => {
     // hoje por inteiro — não só o campo origem.
     expect(payload.nome).toBe("Maria Silva");
     expect(payload.telefone).toBe("(11) 98765-4321");
+    // O gclid da URL precisa chegar ao CRM (...tracking) e a URL de
+    // conversão precisa estar em metadados — perder qualquer um dos
+    // dois silenciosamente quebra a atribuição de campanha paga.
+    expect(payload.gclid).toBe("abc123");
+    expect(payload.metadados?.url_conversao).toBe("https://wa.me/5511999999999");
   });
 
   it("T02: openLeadModal(url, { origem }) faz origem explícita vencer a derivação por tracking", async () => {
