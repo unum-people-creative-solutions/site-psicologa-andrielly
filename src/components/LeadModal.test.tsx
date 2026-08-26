@@ -207,3 +207,41 @@ describe("LeadModal — e-mail opcional (LEAD-4)", () => {
   });
 });
 
+describe("LeadModal — copy variável (LEAD-5)", () => {
+  it("T08: sem options, exibe os textos padrão", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+
+    expect(screen.getByRole("heading", { name: "Iniciar Atendimento" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /FALAR COM A PSICÓLOGA/i })).toBeInTheDocument();
+  });
+
+  it("T08: com options.title/options.submitLabel, exibe os valores customizados", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness
+          url="https://wa.me/5511999999999"
+          options={{ title: "Agende sua Avaliação", submitLabel: "QUERO AGENDAR" }}
+        />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+
+    expect(screen.getByRole("heading", { name: "Agende sua Avaliação" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /QUERO AGENDAR/i })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Iniciar Atendimento" })).not.toBeInTheDocument();
+  });
+});
+

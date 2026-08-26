@@ -103,6 +103,12 @@ export default function LeadModal() {
 
   if (!isOpen) return null;
 
+  const title = options.title ?? "Iniciar Atendimento";
+  const description =
+    options.description ??
+    "Preencha brevemente para que a psicóloga Andrielly possa te dar um retorno personalizado.";
+  const submitLabel = options.submitLabel ?? "FALAR COM A PSICÓLOGA";
+
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -131,10 +137,8 @@ export default function LeadModal() {
 
           <div className="p-8 md:p-10">
             <div className="mb-8">
-              <h3 className="text-2xl font-serif text-brand-navy mb-2">Iniciar Atendimento</h3>
-              <p className="text-brand-navy/60 text-sm">
-                Preencha brevemente para que a psicóloga Andrielly possa te dar um retorno personalizado.
-              </p>
+              <h3 className="text-2xl font-serif text-brand-navy mb-2">{title}</h3>
+              <p className="text-brand-navy/60 text-sm">{description}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -212,7 +216,7 @@ export default function LeadModal() {
                   <Loader2 className="animate-spin" size={20} />
                 ) : (
                   <>
-                    FALAR COM A PSICÓLOGA
+                    {submitLabel}
                     <motion.span
                       animate={{ x: [0, 5, 0] }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
