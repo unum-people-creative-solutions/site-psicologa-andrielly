@@ -9,7 +9,7 @@ import { TextField } from "./ui/TextField";
 import { PhoneField } from "./ui/PhoneField";
 
 export default function LeadModal() {
-  const { isOpen, pendingUrl, closeLeadModal, tracking } = useLead();
+  const { isOpen, pendingUrl, closeLeadModal, tracking, options } = useLead();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -46,6 +46,7 @@ export default function LeadModal() {
     } else if (tracking.utm_source) {
       origem = tracking.utm_source;
     }
+    origem = options.origem ?? origem;
 
     // Função de fallback para garantir o redirecionamento
     const redirectToWhatsApp = () => {
