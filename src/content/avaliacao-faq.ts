@@ -41,6 +41,11 @@ export const faq: FaqItem[] = [
       "Sim. Todo o processo segue o sigilo profissional da Psicologia e a Lei Geral de Proteção de Dados (LGPD). Os resultados são discutidos só com você (ou com os responsáveis, no caso de crianças e adolescentes).",
   },
   {
+    pergunta: "E se a avaliação não indicar nenhum diagnóstico específico?",
+    resposta:
+      "Também é um resultado válido. O laudo registra o que foi encontrado — inclusive quando não há indicação de um quadro específico — e as recomendações são construídas a partir disso, não apenas a partir de um diagnóstico.",
+  },
+  {
     pergunta: "O médico pediu para eu fazer o WISC. Você aplica?",
     resposta:
       "Sim. Utilizo instrumentos como as Escalas Wechsler (WISC para crianças e adolescentes, WAIS para adultos), o RAVLT para memória e o TAVIS para atenção, entre outros — o protocolo exato é definido na anamnese, de acordo com a queixa e a idade.",
