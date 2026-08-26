@@ -16,6 +16,8 @@ export const hero = {
   ctaLabel: "Entenda se a avaliação é indicada para o seu caso",
 };
 
+export const headerCtaLabel = "Falar com a psicóloga";
+
 export const gatilhos: string[] = [
   "A escola pediu um relatório ou avaliação psicológica.",
   "Um médico ou psiquiatra encaminhou para investigação.",

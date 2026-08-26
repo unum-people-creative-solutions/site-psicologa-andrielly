@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { headerCtaLabel } from "@/content/avaliacao";
 import { LeadCta } from "./LeadCta";
 
 export function LandingHeader() {
@@ -19,7 +20,7 @@ export function LandingHeader() {
         </Link>
 
         <LeadCta
-          label="Falar com a psicóloga"
+          label={headerCtaLabel}
           variant="primary"
           className="px-6 py-2 text-sm"
         />

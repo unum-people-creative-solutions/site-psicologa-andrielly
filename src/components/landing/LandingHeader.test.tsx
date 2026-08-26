@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { LeadProvider } from "@/context/LeadContext";
+import { headerCtaLabel } from "@/content/avaliacao";
 import { LandingHeader } from "./LandingHeader";
 
 describe("LandingHeader — T02: cabeçalho não oferece rota de saída", () => {
@@ -31,7 +32,7 @@ describe("LandingHeader — T02: cabeçalho não oferece rota de saída", () => 
     );
 
     expect(
-      screen.getAllByRole("link", { name: /falar com a psicóloga/i })
+      screen.getAllByRole("link", { name: new RegExp(headerCtaLabel, "i") })
     ).toHaveLength(1);
   });
 });
