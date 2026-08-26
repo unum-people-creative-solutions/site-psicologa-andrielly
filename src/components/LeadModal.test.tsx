@@ -23,18 +23,33 @@ function Harness({
   url,
   origem,
   options,
+  label = "abrir modal",
 }: {
   url: string;
   origem?: string;
   options?: LeadModalOptions;
+  label?: string;
 }) {
   const { openLeadModal } = useLead();
   const opts = options ?? (origem === undefined ? undefined : { origem });
   return (
     <button onClick={() => (opts === undefined ? openLeadModal(url) : openLeadModal(url, opts))}>
-      abrir modal
+      {label}
     </button>
   );
+}
+
+function CloseHarness() {
+  const { closeLeadModal } = useLead();
+  return <button onClick={closeLeadModal}>fechar modal (harness de teste)</button>;
+}
+
+/** Expõe o `options` cru do contexto para inspeção — o LeadModal em si
+ * retorna null quando fechado, então não dá para observar `options` via
+ * UI nesse estado. */
+function OptionsInspector() {
+  const { options } = useLead();
+  return <pre data-testid="options-inspector">{JSON.stringify(options)}</pre>;
 }
 
 async function preencherCamposValidos(
@@ -82,7 +97,12 @@ describe("LeadModal — precedência de origem (LEAD-1, LEAD-2)", () => {
     await preencherEEnviar(user);
 
     expect(sendToCRM).toHaveBeenCalledTimes(1);
-    expect(vi.mocked(sendToCRM).mock.calls[0][0].origem).toBe("Google Ads");
+    const payload = vi.mocked(sendToCRM).mock.calls[0][0];
+    expect(payload.origem).toBe("Google Ads");
+    // LEAD-1 exige que a chamada de 1 argumento produza o payload de
+    // hoje por inteiro — não só o campo origem.
+    expect(payload.nome).toBe("Maria Silva");
+    expect(payload.telefone).toBe("(11) 98765-4321");
   });
 
   it("T02: openLeadModal(url, { origem }) faz origem explícita vencer a derivação por tracking", async () => {
@@ -101,6 +121,75 @@ describe("LeadModal — precedência de origem (LEAD-1, LEAD-2)", () => {
 
     expect(sendToCRM).toHaveBeenCalledTimes(1);
     expect(vi.mocked(sendToCRM).mock.calls[0][0].origem).toBe("LP Avaliação");
+  });
+
+  it("T01b: fbclid presente deriva origem 'Social Ads'", async () => {
+    window.history.pushState({}, "", "/?fbclid=xyz789");
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherEEnviar(user);
+
+    expect(vi.mocked(sendToCRM).mock.calls[0][0].origem).toBe("Social Ads");
+  });
+
+  it("T01c: utm_source=instagram deriva origem 'Social Ads'", async () => {
+    window.history.pushState({}, "", "/?utm_source=instagram");
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherEEnviar(user);
+
+    expect(vi.mocked(sendToCRM).mock.calls[0][0].origem).toBe("Social Ads");
+  });
+
+  it("T01d: utm_source genérico (não facebook/instagram) usa o próprio valor como origem", async () => {
+    window.history.pushState({}, "", "/?utm_source=newsletter");
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherEEnviar(user);
+
+    expect(vi.mocked(sendToCRM).mock.calls[0][0].origem).toBe("newsletter");
+  });
+
+  it("T01e: sem nenhum parâmetro de tracking, origem cai para 'Orgânico'", async () => {
+    window.history.pushState({}, "", "/");
+    sessionStorage.clear();
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherEEnviar(user);
+
+    expect(vi.mocked(sendToCRM).mock.calls[0][0].origem).toBe("Orgânico");
   });
 });
 
@@ -222,16 +311,25 @@ describe("LeadModal — copy variável (LEAD-5)", () => {
 
     expect(screen.getByRole("heading", { name: "Iniciar Atendimento" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /FALAR COM A PSICÓLOGA/i })).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Preencha brevemente para que a psicóloga Andrielly possa te dar um retorno personalizado."
+      )
+    ).toBeInTheDocument();
   });
 
-  it("T08: com options.title/options.submitLabel, exibe os valores customizados", async () => {
+  it("T08: com options.title/options.submitLabel/options.description, exibe os valores customizados", async () => {
     const user = userEvent.setup();
 
     render(
       <LeadProvider>
         <Harness
           url="https://wa.me/5511999999999"
-          options={{ title: "Agende sua Avaliação", submitLabel: "QUERO AGENDAR" }}
+          options={{
+            title: "Agende sua Avaliação",
+            submitLabel: "QUERO AGENDAR",
+            description: "Descrição customizada da LP",
+          }}
         />
         <LeadModal />
       </LeadProvider>
@@ -241,7 +339,65 @@ describe("LeadModal — copy variável (LEAD-5)", () => {
 
     expect(screen.getByRole("heading", { name: "Agende sua Avaliação" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /QUERO AGENDAR/i })).toBeInTheDocument();
+    expect(screen.getByText("Descrição customizada da LP")).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Iniciar Atendimento" })).not.toBeInTheDocument();
+  });
+
+  it("T08b: options não vazam entre aberturas — fechar e reabrir sem options volta aos defaults", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness
+          url="https://wa.me/5511999999999"
+          options={{ title: "Agende sua Avaliação" }}
+          label="abrir com options"
+        />
+        <Harness url="https://wa.me/5511999999999" label="abrir sem options" />
+        <CloseHarness />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: "abrir com options" }));
+    expect(screen.getByRole("heading", { name: "Agende sua Avaliação" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /fechar modal \(harness/i }));
+    await user.click(screen.getByRole("button", { name: "abrir sem options" }));
+
+    // Se `options` não fosse resetado em closeLeadModal, o título customizado
+    // da abertura anterior vazaria para esta segunda abertura sem options.
+    expect(screen.getByRole("heading", { name: "Iniciar Atendimento" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Agende sua Avaliação" })).not.toBeInTheDocument();
+  });
+
+  it("T08c: closeLeadModal reseta options no próprio contexto, não só por sobrescrita da próxima abertura", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness
+          url="https://wa.me/5511999999999"
+          options={{ title: "Agende sua Avaliação" }}
+          label="abrir com options"
+        />
+        <CloseHarness />
+        <OptionsInspector />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: "abrir com options" }));
+    expect(screen.getByTestId("options-inspector")).toHaveTextContent(
+      JSON.stringify({ title: "Agende sua Avaliação" })
+    );
+
+    await user.click(screen.getByRole("button", { name: /fechar modal \(harness/i }));
+
+    // Inspeciona o estado do contexto diretamente — sem passar por outra
+    // chamada a openLeadModal, que sobrescreveria options de qualquer jeito
+    // e mascararia a ausência do reset em closeLeadModal.
+    expect(screen.getByTestId("options-inspector")).toHaveTextContent("{}");
   });
 });
 
