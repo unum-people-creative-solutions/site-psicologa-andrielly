@@ -3,6 +3,14 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LeadProvider, useLead } from "@/context/LeadContext";
 import { faq } from "@/content/avaliacao-faq";
+import {
+  hero,
+  diferencial,
+  entregavel,
+  tiposAvaliacao,
+  sobre,
+  ctaFinal,
+} from "@/content/avaliacao";
 import AvaliacaoNeuropsicologicaPage from "./page";
 
 /**
@@ -24,7 +32,7 @@ function OpenState() {
 }
 
 describe("Página de avaliação — T01: CTA abre o modal com a origem da LP", () => {
-  it("qualquer CTA da página dispara openLeadModal com origem 'LP Avaliação'", async () => {
+  it("TODO CTA da página (não só o primeiro) dispara openLeadModal com origem 'LP Avaliação'", async () => {
     const user = userEvent.setup();
 
     render(
@@ -35,13 +43,58 @@ describe("Página de avaliação — T01: CTA abre o modal com a origem da LP", 
     );
 
     const ctas = screen.getAllByRole("link", { name: /falar com a psicóloga|entenda se a avaliação/i });
-    expect(ctas.length).toBeGreaterThan(0);
+    // Cabeçalho + Hero + CTA final — se um novo CTA for adicionado sem
+    // origem, este número precisa mudar deliberadamente, não por acidente.
+    expect(ctas.length).toBe(3);
 
-    await user.click(ctas[0]);
+    for (const cta of ctas) {
+      await user.click(cta);
+      const state = JSON.parse(screen.getByTestId("open-state").textContent!);
+      expect(state.isOpen).toBe(true);
+      expect(state.options.origem).toBe("LP Avaliação");
+    }
+  });
+
+  it("o botão flutuante de WhatsApp usa a origem 'LP Avaliação - Flutuante'", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <AvaliacaoNeuropsicologicaPage />
+        <OpenState />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("link", { name: /contato via whatsapp/i }));
 
     const state = JSON.parse(screen.getByTestId("open-state").textContent!);
     expect(state.isOpen).toBe(true);
-    expect(state.options.origem).toBe("LP Avaliação");
+    expect(state.options.origem).toBe("LP Avaliação - Flutuante");
+  });
+});
+
+describe("Página de avaliação — estrutura: as 9 seções, na ordem do blueprint", () => {
+  it("renderiza as 9 seções, cada uma identificável por um trecho de conteúdo próprio, na ordem certa", () => {
+    renderPage();
+
+    const marcadores = [
+      hero.title,
+      "Você está aqui?",
+      diferencial.title,
+      entregavel.title,
+      "Como funciona o processo",
+      tiposAvaliacao.title,
+      sobre.nome,
+      "Dúvidas frequentes",
+      ctaFinal.title,
+    ];
+
+    const secoes = Array.from(document.querySelectorAll("main > section"));
+    expect(secoes).toHaveLength(9);
+
+    secoes.forEach((secao, index) => {
+      expect(secao.textContent ?? "").toContain(marcadores[index]);
+    });
   });
 });
 
@@ -87,6 +140,10 @@ describe("Página de avaliação — T05: guarda de conformidade ética", () => 
     expect(bodyText).not.toMatch(/gratuit/);
     expect(bodyText).not.toMatch(/dra\./);
     expect(bodyText).not.toMatch(/especialista/);
+    // Rewrites específicos do Discovery §08 — formulações que já foram
+    // identificadas como previsão taxativa de resultado.
+    expect(bodyText).not.toMatch(/assegura a precisão/);
+    expect(bodyText).not.toMatch(/transforma(m)? a vida/);
   });
 });
 

@@ -67,6 +67,8 @@ describe("Conteúdo da LP de avaliação — T05: guarda de conformidade ética 
     expect(texto).not.toMatch(/resultados garantidos/);
     expect(texto).not.toMatch(/gratuit/);
     expect(texto).not.toMatch(/r\$\s*\d/);
+    expect(texto).not.toMatch(/assegura a precisão/);
+    expect(texto).not.toMatch(/transforma(m)? a vida/);
   });
 
   it("não anuncia título não possuído (Dra., especialista)", () => {
