@@ -2,7 +2,7 @@ import { sobre } from "@/content/avaliacao";
 
 export function AboutProfessional() {
   return (
-    <section className="py-24 bg-brand-creme/30">
+    <section id="sobre-a-psicologa" className="py-24 bg-brand-creme/30">
       <div className="container mx-auto px-6 md:px-12 max-w-3xl">
         <h2 className="text-4xl font-serif text-brand-navy mb-2">{sobre.nome}</h2>
         <p className="text-brand-gold font-medium uppercase tracking-widest text-sm mb-8">
