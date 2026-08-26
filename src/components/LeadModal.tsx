@@ -150,10 +150,9 @@ export default function LeadModal() {
               />
 
               <TextField
-                required
                 type="email"
                 icon={Mail}
-                placeholder="Seu melhor e-mail"
+                placeholder="Seu e-mail (opcional)"
                 value={formData.email}
                 onChange={(e) => {
                   setFormData({ ...formData, email: e.target.value });

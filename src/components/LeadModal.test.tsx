@@ -162,3 +162,48 @@ describe("LeadModal — consentimento LGPD (LEAD-3)", () => {
   });
 });
 
+describe("LeadModal — e-mail opcional (LEAD-4)", () => {
+  beforeEach(() => {
+    vi.mocked(sendToCRM).mockClear();
+  });
+
+  it("T06: submit com e-mail vazio e demais campos válidos envia ao CRM com email vazio", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await preencherCamposValidos(user, { email: "" });
+    await marcarConsentimento(user);
+    await enviar(user);
+
+    expect(sendToCRM).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(sendToCRM).mock.calls[0][0].email).toBe("");
+  });
+
+  it("T07: telefone com menos de 11 dígitos continua bloqueando o envio", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LeadProvider>
+        <Harness url="https://wa.me/5511999999999" />
+        <LeadModal />
+      </LeadProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: /abrir modal/i }));
+    await user.type(screen.getByPlaceholderText(/nome completo/i), "Maria Silva");
+    await user.type(screen.getByPlaceholderText(/whatsapp/i), "1198765");
+    await marcarConsentimento(user);
+    await enviar(user);
+
+    expect(sendToCRM).not.toHaveBeenCalled();
+    expect(screen.getByText(/DDD e 9 dígitos/i)).toBeInTheDocument();
+  });
+});
+
