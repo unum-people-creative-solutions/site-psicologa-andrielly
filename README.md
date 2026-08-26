@@ -43,7 +43,10 @@ Este é o site institucional da **Psicóloga Andrielly Oliveira** (CRP 08/35504)
 │   ├── app/         # Rotas, metadados e layout principal
 │   │   ├── avaliacao-neuropsicologica/  # Landing page de conversão (tráfego pago)
 │   │   └── politica-de-privacidade/     # Exigida pela LGPD para o formulário de lead
-│   ├── components/  # Seções da home (Hero, About, Specialties, Methodology, Contact, etc.)
+│   ├── components/
+│   │   ├── landing/ # As 9 seções da LP de avaliação + LeadCta/LandingHeader/LandingFooter
+│   │   └── *.tsx     # Seções da home (Hero, About, Specialties, Methodology, Contact, etc.)
+│   ├── content/     # avaliacao.ts / avaliacao-faq.ts — todo texto da LP, nunca hardcoded em JSX
 │   ├── context/     # LeadContext — estado do modal de captação e tracking
 │   ├── lib/         # Utilitários (CRM, Tailwind Merge, etc.)
 │   └── styles/      # CSS Global e configurações de tema
@@ -66,6 +69,10 @@ openLeadModal(url, {
 ```
 
 O envio exige um checkbox de consentimento LGPD marcado (vale para os dois formulários, home e LP, porque o `LeadModal` é compartilhado) e o e-mail é opcional — só nome e WhatsApp são obrigatórios.
+
+### Conteúdo da LP (`src/content/`)
+
+Todo texto que a LP de avaliação renderiza vive em `avaliacao.ts` (seções) e `avaliacao-faq.ts` (as 7 perguntas do FAQ — usadas também como fonte do JSON-LD `FAQPage`). Nenhum componente escreve prosa nova diretamente no JSX: isso é o que permite os testes de guarda de conformidade ética (`avaliacao.test.ts`, `page.test.tsx`) varrerem a página inteira contra os termos vedados pelo Art. 20 do Código de Ética (promessa de resultado, preço, superlativo) sem depender de revisão manual a cada edição de copy.
 
 ## 🛠️ Instalação e Execução
 
