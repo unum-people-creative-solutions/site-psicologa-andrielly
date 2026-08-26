@@ -102,6 +102,26 @@ describe("Conteúdo da LP de avaliação — T04: instrumentos só aparecem no F
   });
 });
 
+describe("Conteúdo da LP de avaliação — FAQ: os 7 tópicos do contrato (TASK-SEC-002)", () => {
+  it("tem exatamente 7 itens", () => {
+    // seo-and-launch usa este array como fonte do JSON-LD FAQPage — um
+    // item removido silenciosamente aqui também empobrece o rich result.
+    expect(faq).toHaveLength(7);
+  });
+
+  it("cobre valor, prazo, aceite escolar, encaminhamento, sigilo, ausência de diagnóstico e o WISC", () => {
+    const perguntas = faq.map((f) => f.pergunta.toLowerCase()).join(" | ");
+
+    expect(perguntas).toMatch(/custa/);
+    expect(perguntas).toMatch(/quanto tempo/);
+    expect(perguntas).toMatch(/escola aceita/);
+    expect(perguntas).toMatch(/encaminhamento/);
+    expect(perguntas).toMatch(/sigilo/);
+    expect(perguntas).toMatch(/não indicar.*diagnóstico|diagnóstico.*não/);
+    expect(perguntas).toMatch(/wisc/);
+  });
+});
+
 describe("Conteúdo da LP de avaliação — credencial visível", () => {
   it("contém 'psicóloga' e 'CRP 08/35504'", () => {
     const texto = textoDasSecoes();

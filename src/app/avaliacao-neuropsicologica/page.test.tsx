@@ -42,7 +42,17 @@ describe("Página de avaliação — T01: CTA abre o modal com a origem da LP", 
       </LeadProvider>
     );
 
-    const ctas = screen.getAllByRole("link", { name: /falar com a psicóloga|entenda se a avaliação/i });
+    // Por href, não por rótulo — uma consulta por texto do label deixaria
+    // passar um CTA novo com rótulo diferente e origem errada. O botão
+    // flutuante também aponta para wa.me mas tem seu próprio teste (usa
+    // "LP Avaliação - Flutuante"), então é excluído por aria-label.
+    const ctas = screen
+      .getAllByRole("link")
+      .filter(
+        (l) =>
+          (l.getAttribute("href") ?? "").startsWith("https://wa.me/") &&
+          l.getAttribute("aria-label") !== "Contato via WhatsApp"
+      );
     // Cabeçalho + Hero + CTA final — se um novo CTA for adicionado sem
     // origem, este número precisa mudar deliberadamente, não por acidente.
     expect(ctas.length).toBe(3);

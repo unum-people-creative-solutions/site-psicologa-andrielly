@@ -17,7 +17,7 @@ describe("Arquitetura da LP — SEC-7: Server Components por padrão", () => {
   it("exatamente LeadCta, Faq e LandingHeader têm 'use client'", () => {
     const clientFiles = componentFiles.filter((f) => {
       const content = readFileSync(path.join(dir, f), "utf-8");
-      return content.includes('"use client"');
+      return /^\s*["']use client["'];?\s*$/m.test(content);
     });
 
     expect(clientFiles.sort()).toEqual(
