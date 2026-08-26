@@ -31,6 +31,19 @@ function OpenState() {
   return <div data-testid="open-state">{JSON.stringify({ isOpen, options })}</div>;
 }
 
+/**
+ * document.body.textContent inclui o conteúdo de <script> — inclusive o
+ * JSON-LD (feature seo-and-launch), que legitimamente espelha o FAQ
+ * (siglas de instrumento inclusas). As guardas de conformidade abaixo
+ * checam prosa visível, não payload de dado estruturado — por isso
+ * excluem <script> antes de escanear.
+ */
+function visibleBodyText(): string {
+  const clone = document.body.cloneNode(true) as HTMLElement;
+  clone.querySelectorAll("script").forEach((s) => s.remove());
+  return clone.textContent ?? "";
+}
+
 describe("Página de avaliação — T01: CTA abre o modal com a origem da LP", () => {
   it("TODO CTA da página (não só o primeiro) dispara openLeadModal com origem 'LP Avaliação'", async () => {
     const user = userEvent.setup();
@@ -120,7 +133,7 @@ describe("Página de avaliação — T04: instrumentos só aparecem no FAQ", () 
     if (!faqSection) throw new Error("Seção do FAQ não encontrada (nenhum <section> ancestral)");
 
     const textoDaSecaoFaq = faqSection.textContent ?? "";
-    const textoForaDoFaq = (document.body.textContent ?? "").replace(textoDaSecaoFaq, "");
+    const textoForaDoFaq = visibleBodyText().replace(textoDaSecaoFaq, "");
 
     expect(textoForaDoFaq).not.toMatch(/WISC|WAIS|RAVLT|TAVIS|HTP/);
   });
@@ -141,7 +154,7 @@ describe("Página de avaliação — T04: instrumentos só aparecem no FAQ", () 
 describe("Página de avaliação — T05: guarda de conformidade ética", () => {
   it("não contém termos vedados pelo Art. 20 em nenhum lugar da página renderizada", () => {
     renderPage();
-    const bodyText = (document.body.textContent ?? "").toLowerCase();
+    const bodyText = visibleBodyText().toLowerCase();
 
     expect(bodyText).not.toMatch(/garant/);
     expect(bodyText).not.toMatch(/padrão ouro/);
@@ -160,7 +173,7 @@ describe("Página de avaliação — T05: guarda de conformidade ética", () => 
 describe("Página de avaliação — T06: credencial visível", () => {
   it("declara 'psicóloga' e 'CRP 08/35504'", () => {
     renderPage();
-    const bodyText = document.body.textContent ?? "";
+    const bodyText = visibleBodyText();
 
     expect(bodyText).toMatch(/psicóloga/i);
     expect(bodyText).toMatch(/CRP 08\/35504/);
@@ -170,7 +183,7 @@ describe("Página de avaliação — T06: credencial visível", () => {
 describe("Página de avaliação — T08: escala de classificação fora do FAQ", () => {
   it("não contém 'muito inferior' nem 'média inferior' com o FAQ fechado", () => {
     renderPage();
-    const bodyText = (document.body.textContent ?? "").toLowerCase();
+    const bodyText = visibleBodyText().toLowerCase();
 
     expect(bodyText).not.toMatch(/muito inferior/);
     expect(bodyText).not.toMatch(/média inferior/);
