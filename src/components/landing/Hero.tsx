@@ -19,7 +19,7 @@ export function Hero() {
 
         <div className="relative h-[400px] md:h-[560px] w-full rounded-3xl overflow-hidden border-8 border-white shadow-2xl">
           <Image
-            src="/images/psiandriellyoliveira-20250319_153010.jpg"
+            src="/images/andry_aval.png"
             alt="Andrielly Oliveira, psicóloga"
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
