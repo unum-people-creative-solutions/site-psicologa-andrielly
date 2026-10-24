@@ -1,6 +1,10 @@
 import { gatilhos } from "@/content/avaliacao";
 
-export function TriggerSection() {
+interface TriggerSectionProps {
+  gatilhos?: string[];
+}
+
+export function TriggerSection({ gatilhos: itens = gatilhos }: TriggerSectionProps = {}) {
   return (
     <section className="py-24 bg-brand-creme">
       <div className="container mx-auto px-6 md:px-12">
@@ -12,7 +16,7 @@ export function TriggerSection() {
         </div>
 
         <ul className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {gatilhos.map((gatilho) => (
+          {itens.map((gatilho) => (
             <li
               key={gatilho}
               className="bg-white p-6 rounded-2xl shadow-sm border border-brand-nude/30 text-brand-navy/80 leading-relaxed"

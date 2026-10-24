@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { faq } from "@/content/avaliacao-faq";
+import { faq, type FaqItem } from "@/content/avaliacao-faq";
 
-export function Faq() {
+interface FaqProps {
+  items?: FaqItem[];
+}
+
+export function Faq({ items = faq }: FaqProps = {}) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
@@ -13,7 +17,7 @@ export function Faq() {
           Dúvidas frequentes
         </h2>
         <div className="divide-y divide-brand-nude/30 border-t border-b border-brand-nude/30">
-          {faq.map((item, index) => {
+          {items.map((item, index) => {
             const isOpen = openIndex === index;
             return (
               <div key={item.pergunta}>

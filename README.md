@@ -42,11 +42,12 @@ Este é o site institucional da **Psicóloga Andrielly Oliveira** (CRP 08/35504)
 ├── src/
 │   ├── app/         # Rotas, metadados e layout principal
 │   │   ├── avaliacao-neuropsicologica/  # Landing page de conversão (tráfego pago)
+│   │   ├── avaliacao-neuropsicologica-infantil/  # LP para pais: TDAH, TEA, aprendizagem (tráfego pago)
 │   │   └── politica-de-privacidade/     # Exigida pela LGPD para o formulário de lead
 │   ├── components/
-│   │   ├── landing/ # As 9 seções da LP de avaliação + LeadCta/LandingHeader/LandingFooter
+│   │   ├── landing/ # Seções das LPs de avaliação (texto por props, padrão = LP de avaliação) + LeadCta/LandingHeader/LandingFooter
 │   │   └── *.tsx     # Seções da home (Hero, About, Specialties, Methodology, Contact, etc.)
-│   ├── content/     # avaliacao.ts / avaliacao-faq.ts — todo texto da LP, nunca hardcoded em JSX
+│   ├── content/     # avaliacao*.ts / avaliacao-infantil*.ts — todo texto das LPs, nunca hardcoded em JSX
 │   ├── context/     # LeadContext — estado do modal de captação e tracking
 │   ├── lib/         # Utilitários (CRM, Tailwind Merge, etc.)
 │   └── styles/      # CSS Global e configurações de tema
@@ -72,11 +73,11 @@ O envio exige um checkbox de consentimento LGPD marcado (vale para os dois formu
 
 ### Conteúdo da LP (`src/content/`)
 
-Todo texto que a LP de avaliação renderiza vive em `avaliacao.ts` (seções) e `avaliacao-faq.ts` (as 7 perguntas do FAQ — usadas também como fonte do JSON-LD `FAQPage`). Nenhum componente escreve prosa nova diretamente no JSX: isso é o que permite os testes de guarda de conformidade ética (`avaliacao.test.ts`, `page.test.tsx`) varrerem a página inteira contra os termos vedados pelo Art. 20 do Código de Ética (promessa de resultado, preço, superlativo) sem depender de revisão manual a cada edição de copy.
+Todo texto que a LP de avaliação renderiza vive em `avaliacao.ts` (seções) e `avaliacao-faq.ts` (as 7 perguntas do FAQ — usadas também como fonte do JSON-LD `FAQPage`). A LP infantil (`/avaliacao-neuropsicologica-infantil`) usa `avaliacao-infantil.ts` e `avaliacao-infantil-faq.ts` e reaproveita os mesmos componentes de `landing/`, que recebem o texto por props (sem props, mostram o conteúdo da LP de avaliação). O literal aprovado fica travado em `avaliacao-infantil.literal.test.ts`. Nenhum componente escreve prosa nova diretamente no JSX: isso é o que permite os testes de guarda de conformidade ética (`avaliacao.test.ts`, `page.test.tsx`) varrerem a página inteira contra os termos vedados pelo Art. 20 do Código de Ética (promessa de resultado, preço, superlativo) sem depender de revisão manual a cada edição de copy.
 
 ### Medição da LP (Google Ads)
 
-O CTA flutuante e os CTAs de seção da LP reportam conversão com `origem` própria ("LP Avaliação" / "LP Avaliação - Flutuante"), segregada da home. `LeadCta` aceita um `conversionLabel` opcional — ainda não usado em produção porque o rótulo de conversão específico da LP não foi criado na conta do Google Ads (pendência rastreada como D-B). **Enhanced conversions está desligado para conversões da LP**: a política de dados de cliente do Google Ads veda o envio de e-mail/telefone (`user_data`) para categorias sensíveis, e saúde é uma delas — ver `src/components/LeadModal.tsx`. A atribuição da LP continua funcionando via `gclid`; só a correspondência aprimorada por hash foi desligada.
+O CTA flutuante e os CTAs de seção da LP reportam conversão com `origem` própria ("LP Avaliação" / "LP Avaliação - Flutuante"; na LP infantil, "LP Avaliação Infantil" / "LP Avaliação Infantil - Flutuante"), segregada da home. A LP infantil lê o rótulo da constante `conversionLabel` de `avaliacao-infantil.ts`, que fica `undefined` até a ação de conversão própria existir no Ads. `LeadCta` aceita um `conversionLabel` opcional — ainda não usado em produção porque o rótulo de conversão específico da LP não foi criado na conta do Google Ads (pendência rastreada como D-B). **Enhanced conversions está desligado para conversões da LP**: a política de dados de cliente do Google Ads veda o envio de e-mail/telefone (`user_data`) para categorias sensíveis, e saúde é uma delas — ver `src/components/LeadModal.tsx`. A atribuição da LP continua funcionando via `gclid`; só a correspondência aprimorada por hash foi desligada.
 
 ### Performance
 

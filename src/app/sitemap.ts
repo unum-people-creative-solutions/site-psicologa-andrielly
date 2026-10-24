@@ -19,6 +19,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: "https://psiandriellyoliveira.com.br/avaliacao-neuropsicologica-infantil",
+      lastModified: LAST_MODIFIED,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: "https://psiandriellyoliveira.com.br/politica-de-privacidade",
       lastModified: LAST_MODIFIED,
       changeFrequency: "yearly",
