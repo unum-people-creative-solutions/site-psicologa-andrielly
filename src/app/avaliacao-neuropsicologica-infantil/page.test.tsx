@@ -1,8 +1,16 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LeadProvider, useLead } from "@/context/LeadContext";
-import { hero } from "@/content/avaliacao-infantil";
+import {
+  hero,
+  gatilhos,
+  condicoes,
+  participacao,
+  entregavel,
+  ctaFinal,
+} from "@/content/avaliacao-infantil";
+import { faqInfantil } from "@/content/avaliacao-infantil-faq";
 import AvaliacaoInfantilPage from "./page";
 
 function OpenState() {
@@ -89,5 +97,50 @@ describe("LP infantil — T07: CTAs levam a origem infantil (INF-07, INF-08)", (
     renderPage();
     await user.click(screen.getByRole("link", { name: "Contato via WhatsApp" }));
     expect(openState().options.origem).toBe("LP Avaliação Infantil - Flutuante");
+  });
+});
+
+describe("LP infantil — texto de cada seção é o conteúdo infantil (INF-04)", () => {
+  it("Hero, gatilhos, condições, participação, entregável e CTA final mostram o conteúdo infantil", () => {
+    renderPage();
+    expect(screen.getByText(hero.subtitle)).toBeInTheDocument();
+    gatilhos.forEach((g) => expect(screen.getByText(g)).toBeInTheDocument());
+    condicoes.items.forEach((c) => {
+      expect(screen.getByText(c.nome)).toBeInTheDocument();
+      expect(screen.getByText(c.descricao)).toBeInTheDocument();
+    });
+    expect(screen.getByText(condicoes.nota)).toBeInTheDocument();
+    expect(screen.getByText(participacao.body)).toBeInTheDocument();
+    entregavel.items.forEach((i) => {
+      expect(screen.getByRole("heading", { level: 3, name: i.title })).toBeInTheDocument();
+      expect(screen.getByText(i.body)).toBeInTheDocument();
+    });
+    expect(screen.getByText(ctaFinal.body)).toBeInTheDocument();
+  });
+
+  it("o FAQ visível lista as perguntas de faqInfantil, na ordem, iguais às do JSON-LD (INF-15)", () => {
+    renderPage();
+    const secao = screen.getByRole("heading", { level: 2, name: "Dúvidas frequentes" }).closest("section")!;
+    const perguntasVisiveis = within(secao).getAllByRole("button").map((b) => b.textContent?.trim());
+    expect(perguntasVisiveis).toEqual(faqInfantil.map((i) => i.pergunta));
+
+    const faqLd = Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
+      .map((s) => JSON.parse(s.innerHTML))
+      .find((b) => b["@type"] === "FAQPage");
+    expect(faqLd.mainEntity.map((q: { name: string }) => q.name)).toEqual(perguntasVisiveis);
+  });
+});
+
+describe("LP infantil — CTAs previnem a navegação padrão (INF-07)", () => {
+  it("cabeçalho, Hero, CTA final e botão flutuante cancelam o clique no link do WhatsApp", () => {
+    renderPage();
+    const links = screen
+      .getAllByRole("link")
+      .filter((a) => a.getAttribute("href")?.startsWith("https://wa.me/"));
+    expect(links).toHaveLength(4);
+    for (const link of links) {
+      // fireEvent.click devolve false quando o handler chamou preventDefault()
+      expect(fireEvent.click(link)).toBe(false);
+    }
   });
 });
