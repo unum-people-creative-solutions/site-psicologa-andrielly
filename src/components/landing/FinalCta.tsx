@@ -23,7 +23,7 @@ export function FinalCta({
         <p className="text-lg text-brand-offwhite/80 mb-10 leading-relaxed">{body}</p>
         <LeadCta
           label={ctaLabel}
-          variant="primary"
+          variant="inverse"
           origem={origem}
           conversionLabel={conversionLabel}
         />
