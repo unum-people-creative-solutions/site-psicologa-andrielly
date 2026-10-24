@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import sitemap from "./sitemap";
 
 describe("sitemap", () => {
-  it("declara exatamente as três rotas do site", () => {
+  it("declara exatamente as quatro rotas do site", () => {
     const entries = sitemap();
     const urls = entries.map((entry) => entry.url).sort();
 
@@ -10,6 +10,7 @@ describe("sitemap", () => {
       [
         "https://psiandriellyoliveira.com.br",
         "https://psiandriellyoliveira.com.br/avaliacao-neuropsicologica",
+        "https://psiandriellyoliveira.com.br/avaliacao-neuropsicologica-infantil",
         "https://psiandriellyoliveira.com.br/politica-de-privacidade",
       ].sort()
     );
