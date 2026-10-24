@@ -621,6 +621,13 @@ describe("LeadModal — garantias de LEAD-7 (o paciente sempre chega ao WhatsApp
   });
 
   it("o timer de segurança de 2s redireciona mesmo se o callback do gtag nunca disparar", async () => {
+    // Testes anteriores deste arquivo também acionam o timer de segurança
+    // (real, 2s) com um gtag que nunca chama o callback. Se algum ainda
+    // estiver pendente quando o location for trocado pelo stub abaixo, ele
+    // dispara aqui e "redireciona" antes da hora — o teste ficava instável
+    // conforme a suíte ficava mais lenta. Esperar 2,1s drena todos eles.
+    await new Promise((resolve) => setTimeout(resolve, 2100));
+
     const pendingUrl = "https://wa.me/5511999999999";
     const gtagMock = vi.fn(); // stub que nunca invoca seu event_callback interno
     (window as any).gtag_report_conversion = gtagMock;
@@ -669,7 +676,7 @@ describe("LeadModal — garantias de LEAD-7 (o paciente sempre chega ao WhatsApp
         configurable: true,
       });
     }
-  });
+  }, 15000);
 });
 
 
