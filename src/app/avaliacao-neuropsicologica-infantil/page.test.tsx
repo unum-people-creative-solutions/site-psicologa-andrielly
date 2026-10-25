@@ -87,7 +87,7 @@ describe("LP infantil — T07: CTAs levam a origem infantil (INF-07, INF-08)", (
       await user.click(cta);
       expect(openState().isOpen).toBe(true);
       expect(openState().options.origem).toBe("LP Avaliação Infantil");
-      expect(openState().options.conversionLabel).toBeUndefined();
+      expect(openState().options.conversionLabel).toBe("AW-17122840229/HKuICLKq0qgdEKWd5-Q_");
     }
     expect(screen.getAllByRole("link", { name: hero.ctaLabel })).toHaveLength(2);
   });
