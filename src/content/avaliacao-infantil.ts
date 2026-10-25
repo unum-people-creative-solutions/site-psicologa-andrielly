@@ -81,7 +81,8 @@ export const ctaFinal = {
 export const origem = "LP Avaliação Infantil";
 export const origemFlutuante = "LP Avaliação Infantil - Flutuante";
 
-// Rótulo da ação de conversão própria desta página no Google Ads. Fica
-// indefinido até a ação ser criada no painel; enquanto isso o envio usa o
-// rótulo padrão do layout (spec A4).
-export const conversionLabel: string | undefined = undefined;
+// Rótulo da ação de conversão própria desta página no Google Ads
+// ("Contato — LP Infantil", categoria Contato, principal; criada em
+// 2026-10-24). Separa no Ads os contatos desta página dos da home e da LP
+// de avaliação (spec A4).
+export const conversionLabel: string | undefined = "AW-17122840229/HKuICLKq0qgdEKWd5-Q_";
