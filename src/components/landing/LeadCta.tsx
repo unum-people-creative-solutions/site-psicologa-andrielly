@@ -9,17 +9,20 @@ const WHATSAPP_HREF =
 
 interface LeadCtaProps {
   label: string;
-  variant: "primary" | "secondary" | "floating";
+  variant: "primary" | "secondary" | "inverse" | "floating";
   origem?: string;
   conversionLabel?: string;
   className?: string;
 }
 
-const VARIANT_CLASSES: Record<"primary" | "secondary", string> = {
+const VARIANT_CLASSES: Record<"primary" | "secondary" | "inverse", string> = {
   primary:
     "bg-brand-navy text-brand-offwhite hover:bg-brand-olive shadow-lg hover:shadow-xl",
   secondary:
     "border border-brand-navy text-brand-navy hover:bg-brand-creme",
+  // Para seções de fundo escuro (bg-brand-navy): a "primary" some nelas.
+  inverse:
+    "bg-brand-gold text-brand-navy hover:bg-brand-offwhite shadow-lg hover:shadow-xl",
 };
 
 export function LeadCta({
@@ -65,6 +68,7 @@ export function LeadCta({
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}
+      data-variant={variant}
       className={cn(
         "inline-block px-8 py-4 rounded-full text-center font-semibold transition-all",
         VARIANT_CLASSES[variant],
