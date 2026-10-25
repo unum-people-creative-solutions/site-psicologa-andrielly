@@ -10,7 +10,8 @@ describe("Conteúdo da LP infantil — lp-avaliacao-infantil T04 (INF-04, INF-05
     expect(faqInfantil).toHaveLength(7);
     expect(infantil.origem).toBe("LP Avaliação Infantil");
     expect(infantil.origemFlutuante).toBe("LP Avaliação Infantil - Flutuante");
-    expect(infantil.conversionLabel).toBeUndefined();
+    // Ação "Contato — LP Infantil" criada no Google Ads em 2026-10-24 (spec A4).
+    expect(infantil.conversionLabel).toBe("AW-17122840229/HKuICLKq0qgdEKWd5-Q_");
   });
 
   it("nenhum texto contém termos vedados (Art. 20) nem fala com adulto", () => {
